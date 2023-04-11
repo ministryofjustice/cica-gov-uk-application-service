@@ -1,0 +1,19 @@
+{
+    "title": "Simple open question",
+    "type": "object",
+    "required": ["type", "id", "label", "value"],
+    "properties": {
+        "type": {
+            "const": "simple"
+        },
+        "id": {
+            "$ref": "../question-id.json"
+        },
+        "label": {
+            "type": "string"
+        },
+        "value": {
+            "anyOf": [{"type": "string"}, {"type": "number"}, {"type": "boolean"}]
+        }
+    }
+}
