@@ -19,6 +19,7 @@
         "lint:fix": "eslint --fix ."
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.325.0",
         "@slack/webhook": "^6.0.0",
         "ajv": "^6.12.6",
         "ajv-errors": "^1.0.1",
@@ -28,6 +29,7 @@
         "express-jwt": "^8.0.0",
         "express-jwt-authz": "^2.4.1",
         "express-openapi-validator": "^4.13.7",
+        "fs": "^0.0.1-security",
         "got": "^11.8.5",
         "helmet": "^3.21.2",
         "json-translator-sync": "github:CriminalInjuriesCompensationAuthority/json-translator#sync",
@@ -35,14 +37,17 @@
         "lodash.merge": "^4.6.2",
         "moment-timezone": "^0.5.33",
         "notifications-node-client": "^6.0.0",
+        "pdfkit": "^0.13.0",
         "pg": "^8.7.3",
         "pino-http": "^5.5.0",
         "q-expressions": "github:CriminalInjuriesCompensationAuthority/q-expressions",
         "q-router": "github:CriminalInjuriesCompensationAuthority/q-router#v3.0.1",
         "q-templates-application": "github:CriminalInjuriesCompensationAuthority/q-templates-application#v10.0.0",
+        "sqs-consumer": "^7.0.3",
         "swagger-ui-express": "^4.3.0",
-        "uuid": "^3.3.2",
-        "verror": "^1.10.0"
+        "uuid": "^3.4.0",
+        "verror": "^1.10.0",
+        "wkhtmltopdf": "^0.4.0"
     },
     "devDependencies": {
         "eslint": "^8.0.0",
