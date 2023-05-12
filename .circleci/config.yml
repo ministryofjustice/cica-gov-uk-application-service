@@ -48,7 +48,7 @@ jobs:
       - image: cimg/node:20.1.0
     steps:
       - attach_workspace:
-          at: .
+          at: ./
       - restore_cache:
           key: v1-npm-{{ checksum "package.json" }}-{{checksum "package-lock.json" }}
       - run:
