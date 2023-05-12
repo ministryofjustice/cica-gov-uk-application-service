@@ -11,9 +11,8 @@ const docsRouter = require('./docs/routes');
 const fooRouter = require('./foo/foo-routes');
 // const cyaJson = require('./checkYourAnswers.json');
 const {putInS3, getFromS3} = require('./s3Commands');
-const {sendSQS, receiveSQS} = require('./sqsCommands');
-const {writeJSONToPDF} = require('./pdfCreation.js')
-
+const {sendSQS, receiveSQS, deleteSQS} = require('./sqsCommands');
+const {writeJSONToPDF} = require('./pdfCreation.js');
 
 process.env.DCS_LOG_LEVEL = 'debug';
 
@@ -132,24 +131,29 @@ app.use(errorHandler);
 
 module.exports = app;
 
-
 const sendInput = {
-    QueueUrl: "http://localhost:4566/000000000000/TempusQueue"
+    QueueUrl: 'http://localhost:4566/000000000000/TempusQueue'
 };
 
 const receiveInput = {
-    QueueUrl: "http://localhost:4566/000000000000/ACQueue",
+    QueueUrl: 'http://localhost:4566/000000000000/ACQueue',
     MaxNumberOfMessages: 10
-}
+};
 
 const pdfLocation = 'freshTest.pdf';
 const bucket = 'application-bucket';
 
 async function applicationService() {
-    var jsonKey = await receiveSQS(receiveInput);
+    const responseMessage = await receiveSQS(receiveInput);
+    const jsonKey = responseMessage.Body;
 
-    var s3Json = await getFromS3(bucket, jsonKey);
-    
+    await deleteSQS({
+        QueueUrl: receiveInput.QueueUrl,
+        ReceiptHandle: responseMessage.ReceiptHandle
+    });
+
+    const s3Json = await getFromS3(bucket, jsonKey);
+
     await writeJSONToPDF(s3Json, pdfLocation);
 
     await putInS3(bucket, pdfLocation);
@@ -158,4 +162,4 @@ async function applicationService() {
     sendSQS(sendInput, jsonKey);
 }
 
-applicationService()
+applicationService();

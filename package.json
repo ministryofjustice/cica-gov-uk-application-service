@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.325.0",
+        "@aws-sdk/client-sqs": "^3.332.0",
         "@slack/webhook": "^6.0.0",
         "ajv": "^6.12.6",
         "ajv-errors": "^1.0.1",
