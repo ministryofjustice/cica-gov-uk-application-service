@@ -7,6 +7,7 @@ executors:
   docker-publisher:
     environment:
       IMAGE_NAME: cica-repo-dev
+      NODE_ENV: dev
     docker:
       # Image tool container
       - image: ministryofjustice/cloud-platform-tools
