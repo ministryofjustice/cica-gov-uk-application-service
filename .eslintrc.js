@@ -25,7 +25,14 @@ const config = {
         'import/extensions': ['off'],
         'fp/no-class': 'error'
     },
-    plugins: ['prettier', 'fp']
+    plugins: ['prettier', 'fp'],
+    settings: {
+        'import/resolver': {
+            node: {
+                extensions: ['.js', '.jsx', '.json']
+            }
+        }
+    }
 };
 /*! m0-end */
 
