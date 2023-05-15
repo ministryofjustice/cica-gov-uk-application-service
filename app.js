@@ -9,10 +9,9 @@ const pino = require('pino-http');
 const errorHandler = require('./middleware/error-handler');
 const docsRouter = require('./docs/routes');
 const fooRouter = require('./foo/foo-routes');
-// const cyaJson = require('./checkYourAnswers.json');
-const {putInS3, getFromS3} = require('./s3Commands');
-const {sendSQS, receiveSQS, deleteSQS} = require('./sqsCommands');
-const {writeJSONToPDF} = require('./pdfCreation.js');
+const createS3Service = require('./services/s3');
+const createSqsService = require('./services/sqs');
+const createPdfService = require('./services/pdf');
 
 process.env.DCS_LOG_LEVEL = 'debug';
 
@@ -144,22 +143,26 @@ const pdfLocation = 'freshTest.pdf';
 const bucket = 'application-bucket';
 
 async function applicationService() {
-    const responseMessage = await receiveSQS(receiveInput);
+    const sqsService = createSqsService({logger});
+    logger.info('Testing logger');
+    const responseMessage = await sqsService.receiveSQS(receiveInput);
     const jsonKey = responseMessage.Body;
 
-    await deleteSQS({
+    await sqsService.deleteSQS({
         QueueUrl: receiveInput.QueueUrl,
         ReceiptHandle: responseMessage.ReceiptHandle
     });
 
-    const s3Json = await getFromS3(bucket, jsonKey);
+    const s3Service = createS3Service({logger});
+    const s3Json = await s3Service.getFromS3(bucket, jsonKey);
 
-    await writeJSONToPDF(s3Json, pdfLocation);
+    const pdfService = createPdfService({logger});
+    await pdfService.writeJSONToPDF(s3Json, pdfLocation);
 
-    await putInS3(bucket, pdfLocation);
+    await s3Service.putInS3(bucket, pdfLocation);
 
-    sendSQS(sendInput, pdfLocation);
-    sendSQS(sendInput, jsonKey);
+    sqsService.sendSQS(sendInput, pdfLocation);
+    sqsService.sendSQS(sendInput, jsonKey);
 }
 
 applicationService();
