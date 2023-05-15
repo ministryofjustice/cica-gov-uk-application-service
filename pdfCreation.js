@@ -29,6 +29,10 @@ async function writeJSONToPDF(json, pdfLoc) {
         // console.log(question);
         if (question.id === 'q-applicant-declaration') {
             writeHTML(question.label);
+            pdfDoc
+                .fontSize(12.5)
+                .font('Helvetica')
+                .text(question.valueLabel || question.value);
         } else if (question.type === 'simple') {
             pdfDoc
                 .fontSize(12.5)
@@ -45,6 +49,7 @@ async function writeJSONToPDF(json, pdfLoc) {
                 addPDFSubquestion(question.values[q]);
             });
         }
+        pdfDoc.moveDown();
     }
 
     function writeHeader() {

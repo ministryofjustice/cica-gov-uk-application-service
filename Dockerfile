@@ -15,7 +15,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Defult to production. npm will ignore devDependencies in production mode
-ARG NODE_ENV=production
+ARG NODE_ENV=dev
 ENV NODE_ENV=${NODE_ENV}
 
 # RUN npm install
