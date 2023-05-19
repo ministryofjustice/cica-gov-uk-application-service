@@ -40,6 +40,7 @@
         "notifications-node-client": "^6.0.0",
         "pdfkit": "^0.13.0",
         "pg": "^8.7.3",
+        "pino": "^8.14.1",
         "pino-http": "^5.5.0",
         "q-expressions": "github:CriminalInjuriesCompensationAuthority/q-expressions",
         "q-router": "github:CriminalInjuriesCompensationAuthority/q-router#v3.0.1",

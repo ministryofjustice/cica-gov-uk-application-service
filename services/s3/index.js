@@ -2,13 +2,18 @@
 
 const fs = require('fs');
 const {GetObjectCommand, PutObjectCommand, S3Client} = require('@aws-sdk/client-s3');
+const logger = require('../logging/logger');
 
-function createS3Service(opts) {
-    const {logger} = opts;
-    delete opts.logger;
-
+/** Returns S3 Service object with functions to get objects from an S3 bucket and put objects in an S3 bucket */
+function createS3Service() {
     const s3client = new S3Client({region: 'eu-west-2', endpoint: 'http://localhost:4566'});
 
+    /**
+     * Gets a JSON object with a key that matches the given key from a given S3 bucket
+     * @param {string} bucket - The bucket to get the object from
+     * @param {string} key - The key to match with a json in the bucket
+     * @returns JSON object from bucket with key matching given key
+     */
     async function getFromS3(bucket, key) {
         const content = {
             Bucket: bucket,
@@ -18,10 +23,9 @@ function createS3Service(opts) {
         try {
             logger.info('Getting from S3');
             const response = await s3client.send(new GetObjectCommand(content));
-            logger.info('Got from S3:');
+            logger.info('Got from S3');
             const str = await response.Body.transformToString();
             const json = JSON.parse(str);
-            logger.info(json);
             return json;
         } catch (err) {
             logger.error(err);
@@ -29,6 +33,11 @@ function createS3Service(opts) {
         return false;
     }
 
+    /**
+     * Puts given pdf in a given S3 bucket
+     * @param {string} bucket - The bucket to put the pdf in
+     * @param {string} pdf  - The name of the pdf to be put into S3
+     */
     async function putInS3(bucket, pdf) {
         logger.info('Putting in S3');
         fs.readFile(`./${pdf}`, async function(err, data) {
