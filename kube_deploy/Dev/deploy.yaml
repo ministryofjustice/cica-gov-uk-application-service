@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: application-service-app-dev
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: application-service-app-dev
+    spec:
+      containers:
+        - name: application-service
+          image: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/cica/cica-repo-dev:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3100
+          env:
+            - name: APPLICATION_QUEUE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: application-sqs
+                  key: sqs_id
+            - name: ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dcs-sqs-secret
+                  key: access_key_id
+            - name: SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dcs-sqs-secret
+                  key: secret_access_key
+            - name: TEMPUS_QUEUE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: tempus-sqs
+                  key: sqs_id
+            - name: S3_URL
+              valueFrom:
+                secretKeyRef:
+                  name: application-sqs
+                  key: sqs_id
+  selector:
+    matchLabels:
+      app: application-service-app-dev

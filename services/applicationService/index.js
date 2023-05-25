@@ -4,29 +4,30 @@ const createS3Service = require('../s3');
 const createSqsService = require('../sqs');
 const createPdfService = require('../pdf');
 
-/** Runs the application service */
-async function applicationService() {
-    const bucket = 'application-bucket';
+const dcsQueue = process.env.APPLICATION_QUEUE_ID;
+const tempusQueue = process.env.TEMPUS_QUEUE_ID;
+
+/**
+ * Processes a json message through the application service, prodcuing the pdf and
+ *  sending a message to the Tempus queue when done.
+ * @param {string} responseMessage - The message picked up from the queue
+ */
+async function processMessage(responseMessage) {
+    const bucket = process.env.S3_URL;
 
     const sendInput = {
-        QueueUrl: 'http://localhost:4566/000000000000/TempusQueue'
+        QueueUrl: tempusQueue
     };
 
-    const receiveInput = {
-        QueueUrl: 'http://localhost:4566/000000000000/ACQueue',
-        MaxNumberOfMessages: 10
-    };
-
-    const sqsService = createSqsService();
-    const responseMessage = await sqsService.receiveSQS(receiveInput);
     const jsonKey = responseMessage.Body;
     const pdfLocation = 'stream-stream-test5.pdf';
 
     const deleteInput = {
-        QueueUrl: receiveInput.QueueUrl,
+        QueueUrl: dcsQueue,
         ReceiptHandle: responseMessage.ReceiptHandle
     };
 
+    const sqsService = createSqsService();
     await sqsService.deleteSQS(deleteInput);
 
     const s3Service = createS3Service();
@@ -40,6 +41,22 @@ async function applicationService() {
     const sendObject = `{ pdfKey : ${pdfLocation}, jsonKey : ${jsonKey}}`;
 
     sqsService.sendSQS(sendInput, sendObject);
+}
+
+/** Runs the application service */
+async function applicationService() {
+    const sqsService = createSqsService();
+
+    setInterval(async function() {
+        const receiveInput = {
+            QueueUrl: dcsQueue,
+            MaxNumberOfMessages: 10
+        };
+        const response = await sqsService.receiveSQS(receiveInput);
+        if (response.Messages) {
+            processMessage(response.Messages[0]);
+        }
+    }, 10000);
 }
 
 module.exports = applicationService;

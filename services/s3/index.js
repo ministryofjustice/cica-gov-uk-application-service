@@ -5,8 +5,15 @@ const {GetObjectCommand, PutObjectCommand, S3Client} = require('@aws-sdk/client-
 const logger = require('../logging/logger');
 
 /** Returns S3 Service object with functions to get objects from an S3 bucket and put objects in an S3 bucket */
+
 function createS3Service() {
-    const s3client = new S3Client({region: 'eu-west-2', endpoint: 'http://localhost:4566'});
+    const s3client = new S3Client({
+        region: 'eu-west-2',
+        credentials: {
+            accessKeyId: process.env.ACCESS_KEY,
+            secretAccessKey: process.env.SECRET_ACCESS_KEY
+        }
+    });
 
     /**
      * Gets a JSON object with a key that matches the given key from a given S3 bucket

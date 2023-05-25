@@ -1,7 +1,7 @@
 'use strict';
 
 const PDFDocument = require('pdfkit');
-const wkhtmltopdf = require('wkhtmltopdf');
+// const wkhtmltopdf = require('wkhtmltopdf');
 const fs = require('fs');
 const logger = require('../logging/logger');
 
@@ -18,14 +18,26 @@ function createPdfService() {
             const pdfDoc = new PDFDocument();
             const stream = fs.createWriteStream(pdfLoc);
             pdfDoc.pipe(stream);
-            /**
-             * Writes given html to the PDF
-             * @param {string} html - The html to be written to a pdf
-             */
-            function writeHTML(html) {
-                // var stream2 = fs.createWriteStream(pdfLoc, {flags: 'a'});
-                wkhtmltopdf(html).pipe(stream);
-            }
+
+            // /**
+            //  * Writes given html to the PDF
+            //  * @param {string} html - The html to be written to a pdf
+            //  */
+            // async function writeHTML(html) {
+            // var stream2 = fs.createWriteStream(pdfLoc, {flags: 'a'});
+            // wkhtmltopdf(html).pipe(stream);
+            // return new Promise(res2 => {
+            //     pdfDoc.end();
+            //     setTimeout(function(){
+            //         pdfDoc.on('end', function(){
+            //             logger.info("writing html");
+            //             htmlStream = wkhtmltopdf(html);
+            //             htmlStream.pipe(sStream);
+            //             res2(true);
+            //         })
+            //     }, 2000)
+            // })
+            // }
 
             /**
              * Writes a Subquestion of a composite question to the PDF
@@ -44,14 +56,15 @@ function createPdfService() {
              * Writes the main questions to the PDF
              * @param {object} question - The question to write to the PDF
              */
-            function addPDFQuestion(question) {
+            async function addPDFQuestion(question) {
                 if (question.id === 'q-applicant-declaration') {
                     // If the question has an html label, use writeHTML to write the label to the pdf
-                    writeHTML(question.label);
-                    pdfDoc
-                        .fontSize(12.5)
-                        .font('Helvetica')
-                        .text(question.valueLabel || question.value);
+                    // await writeHTML(question.label);
+                    logger.info('Keeping writing');
+                    // pdfDoc
+                    //     .fontSize(12.5)
+                    //     .font('Helvetica')
+                    //     .text(question.valueLabel || question.value);
                 } else if (question.type === 'simple') {
                     // If the question is simple then write the question to the PDF
                     pdfDoc
@@ -60,6 +73,7 @@ function createPdfService() {
                         .text(question.label)
                         .font('Helvetica')
                         .text(question.valueLabel || question.value);
+                    pdfDoc.moveDown();
                 } else {
                     // Otherwise the question is composite, so write the question label and write each subquestion using addPDFSubquestion
                     pdfDoc
@@ -69,8 +83,8 @@ function createPdfService() {
                     Object.keys(question.values).forEach(function(q) {
                         addPDFSubquestion(question.values[q]);
                     });
+                    pdfDoc.moveDown();
                 }
-                pdfDoc.moveDown();
             }
 
             /**
@@ -118,6 +132,7 @@ function createPdfService() {
                     addPDFQuestion(theme.values[question]);
                 });
             });
+            logger.info('Out of loop');
 
             pdfDoc.end();
 

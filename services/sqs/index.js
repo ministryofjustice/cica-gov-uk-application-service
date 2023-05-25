@@ -10,7 +10,13 @@ const logger = require('../logging/logger');
 
 /** Returns SQS Service object with functions to send, delete and receive messages from a SQS queue */
 function createSqsService() {
-    const client = new SQSClient({region: 'eu-west-2', endpoint: 'http://localhost:4566'});
+    const client = new SQSClient({
+        region: 'eu-west-2',
+        credentials: {
+            accessKeyId: process.env.ACCESS_KEY,
+            secretAccessKey: process.env.SECRET_ACCESS_KEY
+        }
+    });
 
     /**
      * Sends a given message to a given SQS queue
@@ -42,15 +48,11 @@ function createSqsService() {
      * @returns Message received from the queue
      */
     async function receiveSQS(input) {
-        while (true) {
-            const command = new ReceiveMessageCommand(input);
-            const response = client.send(command); // await
-            if (response.Messages) {
-                logger.info('SQS Message Received:');
-                logger.info(response);
-                return response.Messages[0];
-            }
-        }
+        const command = new ReceiveMessageCommand(input);
+        const response = await client.send(command);
+        logger.info('SQS Message Received:');
+        logger.info(response);
+        return response;
     }
 
     return Object.freeze({
