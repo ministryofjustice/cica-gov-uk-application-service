@@ -13,7 +13,7 @@ const tempusQueue = process.env.TEMPUS_QUEUE_ID;
  * @param {string} responseMessage - The message picked up from the queue
  */
 async function processMessage(responseMessage) {
-    const bucket = process.env.S3_URL;
+    const bucket = process.env.S3_BUCKET;
 
     const sendInput = {
         QueueUrl: tempusQueue

@@ -36,11 +36,16 @@ spec:
                 secretKeyRef:
                   name: tempus-sqs
                   key: sqs_id
-            - name: S3_URL
+            - name: S3_BUCKET
               valueFrom:
                 secretKeyRef:
-                  name: application-sqs
-                  key: sqs_id
+                  name: shared-secrets
+                  key: kta_s3_bucket
+            - name: KMS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shared-secrets
+                  key: kta_s3_kms_id
   selector:
     matchLabels:
       app: application-service-app-dev
