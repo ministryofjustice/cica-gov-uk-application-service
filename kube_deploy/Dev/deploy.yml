@@ -14,7 +14,7 @@ spec:
           image: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/cica/cica-repo-dev:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3100
+            - containerPort: 3110
           env:
             - name: APPLICATION_QUEUE_ID
               valueFrom:
