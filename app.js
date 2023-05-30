@@ -5,50 +5,14 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
-const pino = require('pino-http');
 const errorHandler = require('./middleware/error-handler');
 const docsRouter = require('./docs/routes');
 const fooRouter = require('./foo/foo-routes');
-// const cyaJson = require('./checkYourAnswers.json');
-const {putInS3, getFromS3} = require('./s3Commands');
-const {sendSQS, receiveSQS, deleteSQS} = require('./sqsCommands');
-const {writeJSONToPDF} = require('./pdfCreation.js');
+const applicationService = require('./services/applicationService');
 
 process.env.DCS_LOG_LEVEL = 'debug';
 
 const app = express();
-const logger = pino({
-    level: process.env.DCS_LOG_LEVEL,
-    redact: {
-        paths: ['req.headers.authorization'],
-        censor: unredactedValue => {
-            const authorizationHeaderParts = unredactedValue.split('.');
-            return authorizationHeaderParts.length > 1
-                ? `Bearer REDACTED.${authorizationHeaderParts[1]}.REDACTED`
-                : 'REDACTED';
-        }
-    },
-    prettyPrint:
-        process.env.NODE_ENV === 'production'
-            ? false
-            : {
-                  levelFirst: true,
-                  colorize: true,
-                  translateTime: true
-                  // errorProps: 'req,res'
-              },
-    customLogLevel: (res, err) => {
-        if (res.statusCode >= 400 && res.statusCode < 500) {
-            return 'warn';
-        }
-
-        if (res.statusCode >= 500 || err) {
-            return 'error';
-        }
-
-        return 'info';
-    }
-});
 
 app.use(
     helmet({
@@ -67,8 +31,6 @@ app.use(
     })
 );
 
-// logging
-app.use(logger);
 // https://expressjs.com/en/api.html#express.json
 app.use(express.json({type: 'application/vnd.api+json'}));
 // https://expressjs.com/en/api.html#express.urlencoded
@@ -130,36 +92,5 @@ app.use((err, req, res, next) => {
 app.use(errorHandler);
 
 module.exports = app;
-
-const sendInput = {
-    QueueUrl: 'http://localhost:4566/000000000000/TempusQueue'
-};
-
-const receiveInput = {
-    QueueUrl: 'http://localhost:4566/000000000000/ACQueue',
-    MaxNumberOfMessages: 10
-};
-
-const pdfLocation = 'freshTest.pdf';
-const bucket = 'application-bucket';
-
-async function applicationService() {
-    const responseMessage = await receiveSQS(receiveInput);
-    const jsonKey = responseMessage.Body;
-
-    await deleteSQS({
-        QueueUrl: receiveInput.QueueUrl,
-        ReceiptHandle: responseMessage.ReceiptHandle
-    });
-
-    const s3Json = await getFromS3(bucket, jsonKey);
-
-    await writeJSONToPDF(s3Json, pdfLocation);
-
-    await putInS3(bucket, pdfLocation);
-
-    sendSQS(sendInput, pdfLocation);
-    sendSQS(sendInput, jsonKey);
-}
 
 applicationService();
