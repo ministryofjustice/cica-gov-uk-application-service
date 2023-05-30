@@ -106,7 +106,7 @@ jobs:
             docker tag cica/cica-repo-dev:latest ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
             docker push ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
 
-            if [ "${CIRCLE_BRANCH}" ==  "dcs-deploy" ]; then
+            if [ "${CIRCLE_BRANCH}" ==  "application-service-deploy" ]; then
                docker tag cica/cica-repo-dev:latest ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
                docker push ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
             fi
@@ -210,13 +210,13 @@ workflows:
             - publish_latest
           filters:
             branches:
-              only: dcs-deploy
+              only: application-service-deploy
       - deploy_to_dev:
           requires:
             - push_image
           filters:
             branches:
-              only: dcs-deploy
+              only: application-service-deploy
       - deploy_to_uat_approval:
           type: approval
           requires:
@@ -229,7 +229,7 @@ workflows:
             - deploy_to_uat_approval
           filters:
             branches:
-              only: dcs-deploy
+              only: application-service-deploy
       - deploy_to_prod_approval:
           type: approval
           requires:
@@ -237,10 +237,10 @@ workflows:
             - deploy_to_uat
           filters:
             branches:
-              only: dcs-deploy
+              only: application-service-deploy
       - deploy_to_prod:
           requires:
             - deploy_to_prod_approval
           filters:
             branches:
-              only: dcs-deploy
+              only: application-service-deploy
