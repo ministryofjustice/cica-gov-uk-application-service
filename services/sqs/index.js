@@ -31,6 +31,7 @@ function createSqsService() {
         const response = await client.send(command);
         return response;
     }
+
     /**
      * Deletes a given message from a given SQS queue
      * @param {object} input - Contains the details of the queue and message to delete
