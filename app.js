@@ -1,5 +1,6 @@
 'use strict';
 
+require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
@@ -87,4 +88,4 @@ app.use(errorHandler);
 
 module.exports = app;
 
-applicationService();
+applicationService.applicationService();

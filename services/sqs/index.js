@@ -15,7 +15,8 @@ function createSqsService() {
         credentials: {
             accessKeyId: process.env.ACCESS_KEY,
             secretAccessKey: process.env.SECRET_ACCESS_KEY
-        }
+        },
+        endpoint: process.env.NODE_ENV === 'local' ? 'http://localhost:4566' : undefined
     });
 
     /**
