@@ -7,7 +7,7 @@ describe('PDF Service', () => {
     jest.setTimeout(999999);
     it('Should generate a valid PDF document', async () => {
         jest.setTimeout(999999);
-        const path = 'resources/testing/output.pdf';
+        const path = 'resources/temp/output.pdf';
         const stream = fs.readFileSync('resources/testing/checkYourAnswers.json');
         const pdfService = createPdfService();
         await pdfService.writeJSONToPDF(JSON.parse(stream), path);
