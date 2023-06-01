@@ -24,12 +24,12 @@ spec:
             - name: ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: dcs-sqs-secret
+                  name: app-service-sqs-secret
                   key: access_key_id
             - name: SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: dcs-sqs-secret
+                  name: app-service-sqs-secret
                   key: secret_access_key
             - name: TEMPUS_QUEUE_ID
               valueFrom:
