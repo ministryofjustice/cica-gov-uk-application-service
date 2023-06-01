@@ -121,8 +121,8 @@ function createPdfService() {
 
             // Loops over each theme in the json, and for each writes the header and then
             //     loops through each question in the theme, which are each written using addPDFQuestion
-            Object.keys(json).forEach(function(t) {
-                const theme = json[t];
+            Object.keys(json.themes).forEach(function(t) {
+                const theme = json.themes[t];
                 pdfDoc
                     .fontSize(17.5)
                     .fillColor('#444444')

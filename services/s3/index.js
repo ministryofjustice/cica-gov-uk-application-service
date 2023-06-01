@@ -12,7 +12,8 @@ function createS3Service() {
         credentials: {
             accessKeyId: process.env.ACCESS_KEY,
             secretAccessKey: process.env.SECRET_ACCESS_KEY
-        }
+        },
+        endpoint: process.env.NODE_ENV === 'local' ? 'http://localhost:4566' : undefined
     });
 
     /**
@@ -47,15 +48,15 @@ function createS3Service() {
      * @param {string} bucket - The bucket to put the pdf in
      * @param {string} pdf  - The name of the pdf to be put into S3
      */
-    async function putInS3(bucket, pdf) {
+    async function putInS3(bucket, object, key) {
         logger.info('Putting in S3');
-        fs.readFile(`./${pdf}`, async function(err, data) {
+        fs.readFile(`./${object}`, async function(err, data) {
             if (err) {
-                console.error(err);
+                logger.error(err);
             }
             const command = new PutObjectCommand({
                 Bucket: bucket,
-                Key: `${bucket}/${pdf}`,
+                Key: `${bucket}/${key}`,
                 Body: data,
                 contentType: 'application/pdf',
                 ServerSideEncryption: 'aws:kms',
@@ -66,7 +67,7 @@ function createS3Service() {
                 const response = await s3client.send(command);
                 return response;
             } catch (errr) {
-                console.error(errr);
+                logger.error(errr);
                 return {};
             }
         });

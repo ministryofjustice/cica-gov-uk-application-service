@@ -1,14 +1,13 @@
 'use strict';
 
+require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
 const errorHandler = require('./middleware/error-handler');
-const docsRouter = require('./docs/routes');
-const fooRouter = require('./foo/foo-routes');
-const applicationService = require('./services/applicationService');
+const applicationService = require('./services/application');
 
 process.env.DCS_LOG_LEVEL = 'debug';
 
@@ -39,8 +38,6 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/docs', docsRouter);
-
 app.use((req, res, next) => {
     // Default to JSON:API content type for all subsequent responses
     res.type('application/vnd.api+json');
@@ -60,8 +57,6 @@ app.use(
         validateSecurity: false
     })
 );
-
-app.use('/api/v1/foos', fooRouter);
 
 // Express doesn't treat 404s as errors. If the following handler has been reached then nothing else matched e.g. a 404
 // https://expressjs.com/en/starter/faq.html#how-do-i-handle-404-responses
@@ -93,4 +88,4 @@ app.use(errorHandler);
 
 module.exports = app;
 
-applicationService();
+applicationService.applicationService();

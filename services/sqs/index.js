@@ -15,7 +15,8 @@ function createSqsService() {
         credentials: {
             accessKeyId: process.env.ACCESS_KEY,
             secretAccessKey: process.env.SECRET_ACCESS_KEY
-        }
+        },
+        endpoint: process.env.NODE_ENV === 'local' ? 'http://localhost:4566' : undefined
     });
 
     /**
@@ -31,6 +32,7 @@ function createSqsService() {
         const response = await client.send(command);
         return response;
     }
+
     /**
      * Deletes a given message from a given SQS queue
      * @param {object} input - Contains the details of the queue and message to delete
