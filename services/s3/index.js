@@ -26,7 +26,8 @@ function createS3Service() {
         const content = {
             Bucket: bucket,
             Key: `${bucket}/${key}`,
-            ServerSideEncryption: 'aws:kms'
+            ServerSideEncryption: 'aws:kms',
+            SSEKMSKeyId: process.env.KMS_KEY
         };
 
         try {
@@ -58,7 +59,8 @@ function createS3Service() {
                 Key: `${bucket}/${key}`,
                 Body: data,
                 contentType: 'application/pdf',
-                ServerSideEncryption: 'aws:kms'
+                ServerSideEncryption: 'aws:kms',
+                SSEKMSKeyId: process.env.KMS_KEY
             });
 
             try {
