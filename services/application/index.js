@@ -46,7 +46,7 @@ async function processMessage(message) {
     const applicationJson = await s3Service.getFromS3(bucket, jsonKey);
 
     // Generate the PDF location and document itself
-    const temporaryLocation = 'resources/summary.pdf';
+    const temporaryLocation = 'resources/temp/summary.pdf';
     const pdfLocation = generatePDFLocation(applicationJson);
     await pdfService.writeJSONToPDF(applicationJson, temporaryLocation);
 
