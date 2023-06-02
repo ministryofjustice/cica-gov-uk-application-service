@@ -23,6 +23,7 @@ function createS3Service() {
      * @returns JSON object from bucket with key matching given key
      */
     async function getFromS3(bucket, key) {
+        console.log(`Using key: ${process.env.KMS_KEY}`);
         const content = {
             Bucket: bucket,
             Key: `${bucket}/${key}`,
