@@ -96,7 +96,7 @@ function createPdfService() {
                     .font('Helvetica')
                     .fillColor('#808080')
                     .text('Protect-Personal', {align: 'center'})
-                    .image('resources/static/cicaLogo.png', 450, 80, {width: 80})
+                    .image('./resources/static/cicaLogo.png', 450, 80, {width: 80})
                     .text('Tel: 0300 003 3601')
                     .text('CICA, Alexander Bain House')
                     .text('Atlantic Quay, 15 York Street')
