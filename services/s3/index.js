@@ -57,7 +57,7 @@ function createS3Service() {
             }
             const command = new PutObjectCommand({
                 Bucket: bucket,
-                Key: `${bucket}/${key}`,
+                Key: `${key}`,
                 Body: data,
                 contentType: 'application/pdf',
                 ServerSideEncryption: 'aws:kms',
