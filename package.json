@@ -48,6 +48,7 @@
         "q-templates-application": "github:CriminalInjuriesCompensationAuthority/q-templates-application#v10.0.0",
         "sqs-consumer": "^7.0.3",
         "swagger-ui-express": "^4.3.0",
+        "tree-node-cli": "^1.6.0",
         "uuid": "^3.4.0",
         "verror": "^1.10.0",
         "wkhtmltopdf": "^0.4.0"
