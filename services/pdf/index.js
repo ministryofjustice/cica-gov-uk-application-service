@@ -91,7 +91,7 @@ function createPdfService() {
              * Writes the static PDF header
              */
             function writeHeader() {
-                const logoDir = path.join(__dirname, '/resources/static/cicaLogo.png');
+                const logoDir = path.join(__dirname, '../../resources/static/cicaLogo.png');
                 logger.info(`Loading logo from ${logoDir}`);
                 logger.info(`__dirname: ${path.resolve(__dirname)}`);
                 logger.info(`./: ${path.resolve('./')}`);
