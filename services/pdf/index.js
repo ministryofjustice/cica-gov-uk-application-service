@@ -155,7 +155,9 @@ function createPdfService() {
                     });
                 })
                 .then(() => res(true))
-                .catch(logger.error);
+                .catch(error => {
+                    logger.error(error);
+                });
         });
     }
 
