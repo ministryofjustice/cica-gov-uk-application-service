@@ -1,9 +1,10 @@
 'use strict';
 
+const PDFKitHTML = require('@shipper/pdfkit-html-simple');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
-const path = require('path');
-const tree = require('tree-node-cli');
+// const path = require('path');
+// const tree = require('tree-node-cli');
 const logger = require('../logging/logger');
 
 /** Returns PDF Service object with a function to write a JSON to a PDF */
@@ -16,36 +17,13 @@ function createPdfService() {
      */
     async function writeJSONToPDF(json, pdfLoc) {
         return new Promise(res => {
-            const pdfDoc = new PDFDocument();
-            const stream = fs.createWriteStream(pdfLoc);
-            pdfDoc.pipe(stream);
-
-            // /**
-            //  * Writes given html to the PDF
-            //  * @param {string} html - The html to be written to a pdf
-            //  */
-            // async function writeHTML(html) {
-            // var stream2 = fs.createWriteStream(pdfLoc, {flags: 'a'});
-            // wkhtmltopdf(html).pipe(stream);
-            // return new Promise(res2 => {
-            //     pdfDoc.end();
-            //     setTimeout(function(){
-            //         pdfDoc.on('end', function(){
-            //             logger.info("writing html");
-            //             htmlStream = wkhtmltopdf(html);
-            //             htmlStream.pipe(sStream);
-            //             res2(true);
-            //         })
-            //     }, 2000)
-            // })
-            // }
-
+            const pdfDocument = new PDFDocument();
             /**
              * Writes a Subquestion of a composite question to the PDF
              * @param {object} question - The sub question to write to the PDF
              */
             function addPDFSubquestion(question) {
-                pdfDoc
+                pdfDocument
                     .fontSize(12.5)
                     .font('Helvetica-Bold')
                     .text(question.label, {indent: 30})
@@ -62,29 +40,25 @@ function createPdfService() {
                     // If the question has an html label, use writeHTML to write the label to the pdf
                     // await writeHTML(question.label);
                     logger.info('Keeping writing');
-                    // pdfDoc
-                    //     .fontSize(12.5)
-                    //     .font('Helvetica')
-                    //     .text(question.valueLabel || question.value);
                 } else if (question.type === 'simple') {
                     // If the question is simple then write the question to the PDF
-                    pdfDoc
+                    pdfDocument
                         .fontSize(12.5)
                         .font('Helvetica-Bold')
                         .text(question.label)
                         .font('Helvetica')
                         .text(question.valueLabel || question.value);
-                    pdfDoc.moveDown();
+                    pdfDocument.moveDown();
                 } else {
                     // Otherwise the question is composite, so write the question label and write each subquestion using addPDFSubquestion
-                    pdfDoc
+                    pdfDocument
                         .fontSize(12.5)
                         .font('Helvetica-Bold')
                         .text(question.label);
                     Object.keys(question.values).forEach(function(q) {
                         addPDFSubquestion(question.values[q]);
                     });
-                    pdfDoc.moveDown();
+                    pdfDocument.moveDown();
                 }
             }
 
@@ -92,19 +66,19 @@ function createPdfService() {
              * Writes the static PDF header
              */
             function writeHeader() {
-                const logoDir = path.join(__dirname, '../../resources/static/cicaLogo.png');
+                // const logoDir = path.join(__dirname, '../../resources/static/cicaLogo.png');
 
-                const directoryTree = tree(path.join(__dirname, '../../'), {
-                    exclude: [/node_modules/]
-                });
-                logger.info(directoryTree);
+                // const directoryTree = tree(path.join(__dirname, '../../'), {
+                //     exclude: [/node_modules/]
+                // });
+                // logger.info(directoryTree);
 
-                pdfDoc
+                pdfDocument
                     .fontSize(10)
                     .font('Helvetica')
                     .fillColor('#808080')
                     .text('Protect-Personal', {align: 'center'})
-                    .image(logoDir, 450, 80, {width: 80})
+                    // .image(logoDir, 450, 80, {width: 80}) - TODO: directory resolution isn't working
                     .text('Tel: 0300 003 3601')
                     .text('CICA, Alexander Bain House')
                     .text('Atlantic Quay, 15 York Street')
@@ -131,7 +105,7 @@ function createPdfService() {
             //     loops through each question in the theme, which are each written using addPDFQuestion
             Object.keys(json.themes).forEach(function(t) {
                 const theme = json.themes[t];
-                pdfDoc
+                pdfDocument
                     .fontSize(17.5)
                     .fillColor('#444444')
                     .font('Helvetica-Bold')
@@ -140,14 +114,48 @@ function createPdfService() {
                     addPDFQuestion(theme.values[question]);
                 });
             });
-            logger.info('Out of loop');
 
-            pdfDoc.end();
+            // Get the HTML string from the consent-summary section of the application json.
+            const bufStr = json.themes.find(t => t.id === 'consent-summary').values[0].label;
+            const htmlBuffer = Buffer.from(bufStr, 'utf8');
 
-            stream.on('finish', function() {
-                logger.info('PDF finished');
-                res(true);
-            });
+            PDFKitHTML.parse(htmlBuffer)
+                .then(function(transformations) {
+                    return transformations.reduce(function(promise, transformation) {
+                        return promise.then(transformation);
+                    }, Promise.resolve(pdfDocument));
+                })
+                .then(function(document) {
+                    return new Promise(function(resolve, reject) {
+                        const buffers = [];
+
+                        document.on('data', function(chunk) {
+                            buffers.push(chunk);
+                        });
+
+                        document.on('error', reject);
+
+                        document.on('end', function() {
+                            resolve(Buffer.concat(buffers));
+                        });
+
+                        document.flushPages();
+                        document.end();
+                    });
+                })
+                .then(function(buffer) {
+                    return new Promise((resolve, reject) => {
+                        fs.writeFile(pdfLoc, buffer, err => {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve(true);
+                            }
+                        });
+                    });
+                })
+                .then(() => res(true))
+                .catch(logger.error);
         });
     }
 
