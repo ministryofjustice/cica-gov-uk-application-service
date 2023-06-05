@@ -3,6 +3,7 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
+const tree = require('tree-node-cli');
 const logger = require('../logging/logger');
 
 /** Returns PDF Service object with a function to write a JSON to a PDF */
@@ -92,11 +93,12 @@ function createPdfService() {
              */
             function writeHeader() {
                 const logoDir = path.join(__dirname, '../../resources/static/cicaLogo.png');
-                logger.info(`Loading logo from ${logoDir}`);
-                logger.info(`__dirname: ${path.resolve(__dirname)}`);
-                logger.info(`./: ${path.resolve('./')}`);
-                logger.info(`/: ${path.resolve('/')}`);
-                logger.info(`../../:${path.resolve('../../')}`);
+
+                const directoryTree = tree('../../', {
+                    allFiles: true
+                });
+                logger.info(directoryTree);
+
                 pdfDoc
                     .fontSize(10)
                     .font('Helvetica')
