@@ -1,5 +1,6 @@
 'use strict';
 
+const fs = require('fs');
 const createS3Service = require('../s3');
 const createSqsService = require('../sqs');
 const createPdfService = require('../pdf');
@@ -46,9 +47,12 @@ async function processMessage(message) {
     const applicationJson = await s3Service.getFromS3(bucket, jsonKey);
 
     // Generate the PDF location and document itself
-    const temporaryLocation = 'resources/temp/summary.pdf';
+    const temporaryLocation = './temp';
+    if (!fs.existsSync(temporaryLocation)) {
+        fs.mkdirSync(temporaryLocation);
+    }
     const pdfLocation = generatePDFLocation(applicationJson);
-    await pdfService.writeJSONToPDF(applicationJson, temporaryLocation);
+    await pdfService.writeJSONToPDF(applicationJson, `${temporaryLocation}/summary.pdf`);
 
     // Upload the PDF document to S3
     await s3Service.putInS3(bucket, temporaryLocation, pdfLocation);
