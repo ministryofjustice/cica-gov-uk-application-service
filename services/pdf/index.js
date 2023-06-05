@@ -1,8 +1,8 @@
 'use strict';
 
 const PDFDocument = require('pdfkit');
-// const wkhtmltopdf = require('wkhtmltopdf');
 const fs = require('fs');
+const path = require('path');
 const logger = require('../logging/logger');
 
 /** Returns PDF Service object with a function to write a JSON to a PDF */
@@ -91,12 +91,18 @@ function createPdfService() {
              * Writes the static PDF header
              */
             function writeHeader() {
+                const logoDir = path.join(__dirname, '/resources/static/cicaLogo.png');
+                logger.info(`Loading logo from ${logoDir}`);
+                logger.info(`__dirname: ${path.resolve(__dirname)}`);
+                logger.info(`./: ${path.resolve('./')}`);
+                logger.info(`/: ${path.resolve('/')}`);
+                logger.info(`../../:${path.resolve('../../')}`);
                 pdfDoc
                     .fontSize(10)
                     .font('Helvetica')
                     .fillColor('#808080')
                     .text('Protect-Personal', {align: 'center'})
-                    .image('./resources/static/cicaLogo.png', 450, 80, {width: 80})
+                    .image(logoDir, 450, 80, {width: 80})
                     .text('Tel: 0300 003 3601')
                     .text('CICA, Alexander Bain House')
                     .text('Atlantic Quay, 15 York Street')
