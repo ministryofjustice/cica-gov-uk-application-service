@@ -55,7 +55,7 @@ async function processMessage(message) {
     await pdfService.writeJSONToPDF(applicationJson, `${temporaryLocation}/summary.pdf`);
 
     // Upload the PDF document to S3
-    await s3Service.putInS3(bucket, temporaryLocation, pdfLocation);
+    await s3Service.putInS3(bucket, `${temporaryLocation}/summary.pdf`, pdfLocation);
 
     // Write message to Tempus queue for further processing
     const sqsInput = {
