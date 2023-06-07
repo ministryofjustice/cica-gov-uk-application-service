@@ -50,7 +50,7 @@ function createPdfService() {
                     pdfDocument
                         .fontSize(12.5)
                         .font('Helvetica-Bold')
-                        .text(question.label);
+                        .text(question.label, indent);
                     Object.keys(question.values).forEach(function(q) {
                         addPDFQuestion(question.values[q], indent + 30);
                     });
