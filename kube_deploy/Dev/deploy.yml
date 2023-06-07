@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: application-service-app-stag
+  name: application-service-app-dev
 spec:
   replicas: 2
   template:
     metadata:
       labels:
-        app: application-service-app-stag
+        app: application-service-app-dev
     spec:
       containers:
         - name: application-service
-          image: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/cica/cica-repo-stag:latest
+          image: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/cica/cica-repo-dev:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3110
@@ -48,4 +48,4 @@ spec:
                   key: kta_s3_kms_id
   selector:
     matchLabels:
-      app: application-service-app-stag
+      app: application-service-app-dev

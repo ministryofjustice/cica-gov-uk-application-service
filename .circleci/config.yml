@@ -106,7 +106,7 @@ jobs:
             docker tag cica/cica-repo-dev:latest ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
             docker push ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
 
-            if [ "${CIRCLE_BRANCH}" ==  "dcs-deploy" ]; then
+            if [ "${CIRCLE_BRANCH}" ==  "application-service-deploy" ]; then
                docker tag cica/cica-repo-dev:latest ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
                docker push ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
             fi
@@ -130,7 +130,7 @@ jobs:
           name: Deploy to the cluster
           command: |
             echo "deploy before aws ecr"
-            kubectl set image -f kube_deploy/Dev/deploy.yml data-capture-service=${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1} --local -o yaml \
+            kubectl set image -f kube_deploy/Dev/deploy.yml application-service=${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1} --local -o yaml \
             | kubectl apply -f -
             kubectl apply \
                 -f kube_deploy/Dev/service.yml \
@@ -156,7 +156,7 @@ jobs:
           name: Deploy to the cluster
           command: |
             echo "deploy before aws ecr"
-            kubectl set image -f kube_deploy/Uat/deploy.yml data-capture-service=${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1} --local -o yaml \
+            kubectl set image -f kube_deploy/Uat/deploy.yml application-service=${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1} --local -o yaml \
             | kubectl apply -f -
             kubectl apply \
                 -f kube_deploy/Uat/service.yml \
@@ -181,7 +181,7 @@ jobs:
           name: Deploy to the cluster
           command: |
             echo "deploy before aws ecr"
-            kubectl set image -f kube_deploy/Prod/deploy.yml data-capture-service=${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1} --local -o yaml \
+            kubectl set image -f kube_deploy/Prod/deploy.yml application-service=${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1} --local -o yaml \
             | kubectl apply -f -
             kubectl apply \
                 -f kube_deploy/Prod/service.yml \
@@ -235,13 +235,13 @@ workflows:
             - publish_latest
           filters:
             branches:
-              only: dcs-deploy
+              only: application-service-deploy
       - deploy_to_dev:
           requires:
             - push_image
           filters:
             branches:
-              only: dcs-deploy
+              only: application-service-deploy
       - deploy_to_uat_approval:
           type: approval
           requires:
@@ -254,7 +254,7 @@ workflows:
             - deploy_to_uat_approval
           filters:
             branches:
-              only: dcs-deploy
+              only: application-service-deploy
       - deploy_to_prod_approval:
           type: approval
           requires:
@@ -262,7 +262,7 @@ workflows:
             - deploy_to_uat
           filters:
             branches:
-              only: dcs-deploy
+              only: application-service-deploy
       - deploy_to_prod:
           requires:
             - deploy_to_prod_approval
