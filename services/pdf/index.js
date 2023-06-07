@@ -3,6 +3,7 @@
 const PDFKitHTML = require('@shipper/pdfkit-html-simple');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const moment = require('moment');
 // const path = require('path');
 // const tree = require('tree-node-cli');
 const logger = require('../logging/logger');
@@ -18,24 +19,12 @@ function createPdfService() {
     async function writeJSONToPDF(json, pdfLoc) {
         return new Promise(res => {
             const pdfDocument = new PDFDocument();
-            /**
-             * Writes a Subquestion of a composite question to the PDF
-             * @param {object} question - The sub question to write to the PDF
-             */
-            function addPDFSubquestion(question) {
-                pdfDocument
-                    .fontSize(12.5)
-                    .font('Helvetica-Bold')
-                    .text(question.label, {indent: 30})
-                    .font('Helvetica')
-                    .text(question.valueLabel || question.value, {indent: 30});
-            }
 
             /**
              * Writes the main questions to the PDF
              * @param {object} question - The question to write to the PDF
              */
-            async function addPDFQuestion(question) {
+            async function addPDFQuestion(question, indent = 0) {
                 if (question.id === 'q-applicant-declaration') {
                     // If the question has an html label, use writeHTML to write the label to the pdf
                     // await writeHTML(question.label);
@@ -45,9 +34,16 @@ function createPdfService() {
                     pdfDocument
                         .fontSize(12.5)
                         .font('Helvetica-Bold')
-                        .text(question.label)
-                        .font('Helvetica')
-                        .text(question.valueLabel || question.value);
+                        .text(question.label, {indent})
+                        .font('Helvetica');
+                    if (question.format && question.format.value === 'date-time') {
+                        pdfDocument.text(
+                            moment(question.valueLabel || question.value).format('DD/MM/YYYY'),
+                            {indent}
+                        );
+                    } else {
+                        pdfDocument.text(question.valueLabel || question.value, {indent});
+                    }
                     pdfDocument.moveDown();
                 } else {
                     // Otherwise the question is composite, so write the question label and write each subquestion using addPDFSubquestion
@@ -56,7 +52,7 @@ function createPdfService() {
                         .font('Helvetica-Bold')
                         .text(question.label);
                     Object.keys(question.values).forEach(function(q) {
-                        addPDFSubquestion(question.values[q]);
+                        addPDFQuestion(question.values[q], indent + 30);
                     });
                     pdfDocument.moveDown();
                 }
