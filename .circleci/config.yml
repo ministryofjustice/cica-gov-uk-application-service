@@ -106,7 +106,7 @@ jobs:
             docker tag cica/cica-repo-dev:latest ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
             docker push ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
 
-            if [ "${CIRCLE_BRANCH}" ==  "application-service-deploy" ]; then
+            if [ "${CIRCLE_BRANCH}" ==  "application-service-deploy" || "${CIRCLE_BRANCH}" == "application-service-deploy-to-staging" ]; then
                docker tag cica/cica-repo-dev:latest ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
                docker push ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
             fi
