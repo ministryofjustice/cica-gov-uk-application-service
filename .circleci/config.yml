@@ -235,7 +235,9 @@ workflows:
             - publish_latest
           filters:
             branches:
-              only: application-service-deploy
+              only:
+                - application-service-deploy
+                - application-service-deploy-to-staging
       - deploy_to_dev:
           requires:
             - push_image
