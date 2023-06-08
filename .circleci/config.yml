@@ -186,7 +186,7 @@ jobs:
             kubectl apply \
                 -f kube_deploy/Prod/service.yml \
                 -f kube_deploy/Prod/ingress.yml
-  deploy_to_stag:
+  deploy_to_staging:
     executor: docker-publisher
     steps:
       - checkout
