@@ -14,7 +14,7 @@
                     "type": "simple",
                     "label": "What would you like to do?",
                     "value": "new",
-                    "valueLabel": "Start a PRAYING MANTIS application",
+                    "valueLabel": "Start a new application",
                     "sectionId": "p--new-or-existing-application",
                     "theme": "about-application"
                 },

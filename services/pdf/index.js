@@ -21,10 +21,30 @@ function createPdfService() {
             const pdfDocument = new PDFDocument();
 
             /**
+             * Writes a Subquestion of a composite question to the PDF
+             * @param {object} question - The sub question to write to the PDF
+             */
+            function addPDFSubquestion(question) {
+                pdfDocument
+                    .fontSize(12.5)
+                    .font('Helvetica-Bold')
+                    .text(question.label, {indent: 30})
+                    .font('Helvetica');
+                if (question.format && question.format.value === 'date-time') {
+                    pdfDocument.text(
+                        moment(question.valueLabel || question.value).format('DD/MM/YYYY'),
+                        {indent: 30}
+                    );
+                } else {
+                    pdfDocument.text(question.valueLabel || question.value, {indent: 30});
+                }
+            }
+
+            /**
              * Writes the main questions to the PDF
              * @param {object} question - The question to write to the PDF
              */
-            async function addPDFQuestion(question, indent = 0) {
+            async function addPDFQuestion(question) {
                 if (question.id === 'q-applicant-declaration') {
                     // If the question has an html label, use writeHTML to write the label to the pdf
                     // await writeHTML(question.label);
@@ -34,15 +54,15 @@ function createPdfService() {
                     pdfDocument
                         .fontSize(12.5)
                         .font('Helvetica-Bold')
-                        .text(question.label, {indent})
+                        .fillColor('#444444')
+                        .text(question.label)
                         .font('Helvetica');
                     if (question.format && question.format.value === 'date-time') {
                         pdfDocument.text(
-                            moment(question.valueLabel || question.value).format('DD/MM/YYYY'),
-                            {indent}
+                            moment(question.valueLabel || question.value).format('DD/MM/YYYY')
                         );
                     } else {
-                        pdfDocument.text(question.valueLabel || question.value, {indent});
+                        pdfDocument.text(question.valueLabel || question.value);
                     }
                     pdfDocument.moveDown();
                 } else {
@@ -50,9 +70,10 @@ function createPdfService() {
                     pdfDocument
                         .fontSize(12.5)
                         .font('Helvetica-Bold')
-                        .text(question.label, indent);
+                        .fillColor('#444444')
+                        .text(question.label);
                     Object.keys(question.values).forEach(function(q) {
-                        addPDFQuestion(question.values[q], indent + 30);
+                        addPDFSubquestion(question.values[q]);
                     });
                     pdfDocument.moveDown();
                 }
@@ -101,16 +122,18 @@ function createPdfService() {
             //     loops through each question in the theme, which are each written using addPDFQuestion
             Object.keys(json.themes).forEach(function(t) {
                 const theme = json.themes[t];
-                pdfDocument
-                    .fontSize(17.5)
-                    .fillColor('#444444')
-                    .font('Helvetica-Bold')
-                    .text(theme.title, {underline: true});
+                pdfDocument.fontSize(17.5).font('Helvetica-Bold');
+
+                const height = pdfDocument.currentLineHeight();
+                pdfDocument.rect(pdfDocument.x, pdfDocument.y - 5, 500, height + 7).fill('#444444');
+
+                pdfDocument.fillColor('#FFFFFF').text(theme.title, {underline: true});
                 Object.keys(theme.values).forEach(function(question) {
                     addPDFQuestion(theme.values[question]);
                 });
             });
 
+            pdfDocument.fillColor('#444444');
             // Get the HTML string from the consent-summary section of the application json.
             const bufStr = json.themes.find(t => t.id === 'consent-summary').values[0].label;
             const htmlBuffer = Buffer.from(bufStr, 'utf8');
