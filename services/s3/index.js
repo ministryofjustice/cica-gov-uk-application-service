@@ -51,27 +51,31 @@ function createS3Service() {
      */
     async function putInS3(bucket, object, key) {
         logger.info('Putting in S3');
-        fs.readFile(`./${object}`, async function(err, data) {
+        let data;
+        fs.readFile(`./${object}`, function(err, file) {
             if (err) {
                 logger.error(err);
             }
-            const command = new PutObjectCommand({
-                Bucket: bucket,
-                Key: `${key}`,
-                Body: data,
-                contentType: 'application/pdf',
-                ServerSideEncryption: 'aws:kms',
-                SSEKMSKeyId: process.env.KMS_KEY
-            });
-
-            try {
-                const response = await s3client.send(command);
-                return response;
-            } catch (errr) {
-                logger.error(errr);
-                return {};
-            }
+            data = file;
         });
+
+        const command = new PutObjectCommand({
+            Bucket: bucket,
+            Key: `${key}`,
+            Body: data,
+            contentType: 'application/pdf',
+            ServerSideEncryption: 'aws:kms',
+            SSEKMSKeyId: process.env.KMS_KEY
+        });
+
+        try {
+            const response = await s3client.send(command);
+            logger.info(response);
+            return response;
+        } catch (errr) {
+            logger.error(errr);
+            return {};
+        }
     }
 
     return Object.freeze({

@@ -21,6 +21,7 @@
     "dependencies": {
         "@aws-sdk/client-s3": "^3.325.0",
         "@aws-sdk/client-sqs": "^3.332.0",
+        "@aws-sdk/util-stream-node": "^3.350.0",
         "@shipper/pdfkit-html-simple": "^1.0.3",
         "@slack/webhook": "^6.0.0",
         "ajv": "^6.12.6",

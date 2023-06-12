@@ -1,0 +1,42 @@
+'use strict';
+
+const {GetObjectCommand, PutObjectCommand, S3Client} = require('@aws-sdk/client-s3');
+const {sdkStreamMixin} = require('@aws-sdk/util-stream-node');
+const {mockClient} = require('aws-sdk-client-mock');
+const {createReadStream} = require('fs');
+const createS3Service = require('./index');
+const logger = require('../logging/logger');
+const testJson = require('../../resources/testing/checkYourAnswers.json');
+// const logger = require('../logging/logger');
+
+describe('S3 Service', () => {
+    const s3Mock = mockClient(S3Client);
+
+    it('Should get the item from the S3 bucket', async () => {
+        // Arrange
+        const stream = createReadStream('./resources/testing/checkYourAnswers.json');
+        const sdkStream = sdkStreamMixin(stream);
+        s3Mock.on(GetObjectCommand).resolves({Body: sdkStream});
+
+        // Act
+        const s3Service = createS3Service();
+        const applicationJson = await s3Service.getFromS3('bucket', 'key');
+
+        // Assert
+        expect(applicationJson).toEqual(testJson);
+    });
+
+    it('Should put the given item in the given S3 bucket', async () => {
+        // Arrange
+        const message = {message: 'TestMessage'};
+        s3Mock.on(PutObjectCommand).resolves(message);
+
+        // Act
+        const s3Service = createS3Service();
+        const res = await s3Service.putInS3('bucket', 'resources/testing/output.pdf', 'key');
+
+        // Assert
+        logger.info(res);
+        expect(res).toBe(message);
+    });
+});

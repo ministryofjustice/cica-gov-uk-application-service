@@ -30,6 +30,7 @@ function createSqsService() {
         input.MessageBody = message;
         const command = new SendMessageCommand(input);
         const response = await client.send(command);
+        logger.info(response);
         return response;
     }
 
@@ -40,8 +41,8 @@ function createSqsService() {
     async function deleteSQS(input) {
         const command = new DeleteMessageCommand(input);
         const response = await client.send(command);
-        logger.info('SQS Message Deleted');
         logger.info(response);
+        return response;
     }
 
     /**
@@ -52,7 +53,6 @@ function createSqsService() {
     async function receiveSQS(input) {
         const command = new ReceiveMessageCommand(input);
         const response = await client.send(command);
-        logger.info('SQS Message Received:');
         logger.info(response);
         return response;
     }
