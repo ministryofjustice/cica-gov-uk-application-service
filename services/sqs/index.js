@@ -45,6 +45,10 @@ function createSqsService() {
         return response;
     }
 
+    /**
+     * Validates that the keys received from the queue are all json keys
+     * @param {object} keys - Contains the keys retrieved from the queue
+     */
     function validateS3Keys(keys) {
         logger.info(keys);
         Object.values(keys).forEach(value => {
