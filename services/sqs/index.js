@@ -45,6 +45,19 @@ function createSqsService() {
         return response;
     }
 
+    function validateS3Keys(keys) {
+        logger.info(keys);
+        Object.values(keys).forEach(value => {
+            if (value.endsWith('.json')) {
+                logger.info(`S3 Key received from application queue: ${value}`);
+            } else {
+                throw new Error(
+                    'Application queue message held an invalid file type, only .json is supported'
+                );
+            }
+        });
+    }
+
     /**
      * Receives the next message from a given queue
      * @param {object} input - The details of the queue to receive from
@@ -53,8 +66,9 @@ function createSqsService() {
     async function receiveSQS(input) {
         const command = new ReceiveMessageCommand(input);
         const response = await client.send(command);
-        logger.info(response);
-        return response;
+        const s3Keys = JSON.parse(response);
+        validateS3Keys(s3Keys);
+        return s3Keys;
     }
 
     return Object.freeze({

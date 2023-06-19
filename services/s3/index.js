@@ -23,6 +23,14 @@ function createS3Service() {
      * @returns JSON object from bucket with key matching given key
      */
     async function getFromS3(bucket, key) {
+        // validates that the S3 response is a JSON
+        function validateS3Response(response) {
+            if (response.ContentType !== 'application/json') {
+                throw new Error(`${response.ContentType} content type is not supported`);
+            } else {
+                logger.info('File retrieved from S3 is valid');
+            }
+        }
         logger.info(process.env.KMS_KEY);
         const content = {
             Bucket: bucket,
@@ -35,13 +43,14 @@ function createS3Service() {
             logger.info('Getting from S3');
             const response = await s3client.send(new GetObjectCommand(content));
             logger.info('Got from S3');
+            validateS3Response(response);
             const str = await response.Body.transformToString();
             const json = JSON.parse(str);
             return json;
         } catch (err) {
             logger.error(err);
+            throw err;
         }
-        return false;
     }
 
     /**

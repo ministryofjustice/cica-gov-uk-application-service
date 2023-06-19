@@ -16,7 +16,7 @@ describe('S3 Service', () => {
         // Arrange
         const stream = createReadStream('./resources/testing/checkYourAnswers.json');
         const sdkStream = sdkStreamMixin(stream);
-        s3Mock.on(GetObjectCommand).resolves({Body: sdkStream});
+        s3Mock.on(GetObjectCommand).resolves({Body: sdkStream, ContentType: 'application/json'});
 
         // Act
         const s3Service = createS3Service();
@@ -24,6 +24,41 @@ describe('S3 Service', () => {
 
         // Assert
         expect(applicationJson).toEqual(testJson);
+    });
+
+    it('Should throw an error if the object/bucket is not found', async () => {
+        // Arrange
+        const mockCommand = {
+            Bucket: 'wrong-bucket',
+            Key: 'key'
+        };
+        s3Mock.on(GetObjectCommand, mockCommand).rejects('The specified bucket does not exist');
+
+        // Act and Assert
+        const s3Service = createS3Service();
+        await expect(() => s3Service.getFromS3('wrong-bucket', 'key')).rejects.toThrowError(
+            'The specified bucket does not exist'
+        );
+    });
+
+    it('Should throw an error if the content type is not supported', async () => {
+        // Arrange
+        const stream = createReadStream('./resources/testing/checkYourAnswers.json');
+        const sdkStream = sdkStreamMixin(stream);
+        const mockCommand = {
+            Bucket: 'bucket',
+            Key: 'key.exe'
+        };
+        s3Mock.on(GetObjectCommand, mockCommand).resolves({
+            Body: sdkStream,
+            ContentType: 'application/exe'
+        });
+
+        // Act and Assert
+        const s3Service = createS3Service();
+        await expect(() => s3Service.getFromS3('bucket', 'key.exe')).rejects.toThrowError(
+            'application/exe content type is not supported'
+        );
     });
 
     it('Should put the given item in the given S3 bucket', async () => {
