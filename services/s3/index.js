@@ -61,7 +61,7 @@ function createS3Service() {
     async function putInS3(bucket, object, key) {
         logger.info('Putting in S3');
         let data;
-        fs.readFile(`./${object}`, function(err, file) {
+        fs.readFile(`./${object}`, async function(err, file) {
             if (err) {
                 logger.error(err);
             }
@@ -79,7 +79,6 @@ function createS3Service() {
 
         try {
             const response = await s3client.send(command);
-            logger.info(response);
             return response;
         } catch (errr) {
             logger.error(errr);
