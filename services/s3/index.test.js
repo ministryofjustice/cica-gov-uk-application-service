@@ -7,7 +7,6 @@ const {createReadStream} = require('fs');
 const createS3Service = require('./index');
 const logger = require('../logging/logger');
 const testJson = require('../../resources/testing/checkYourAnswers.json');
-// const logger = require('../logging/logger');
 
 describe('S3 Service', () => {
     const s3Mock = mockClient(S3Client);

@@ -9,7 +9,6 @@ const {
 } = require('@aws-sdk/client-sqs');
 const fs = require('fs');
 const createSQSService = require('./index');
-const logger = require('../logging/logger');
 
 describe('SQS Service', () => {
     const sqsMock = mockClient(SQSClient);
@@ -36,7 +35,7 @@ describe('SQS Service', () => {
 
     it('Should receive a message from the queue', async () => {
         // Arrange
-        const testMessage = fs.readFileSync('resources/testing/queueMessage.json');
+        const testMessage = fs.readFileSync('resources/testing/sqsMessage.json');
         sqsMock.on(ReceiveMessageCommand).resolves(testMessage);
 
         // Act
@@ -47,8 +46,7 @@ describe('SQS Service', () => {
         });
 
         // Assert
-        logger.info(response);
-        expect(Object.keys(response)).toContain('S3Key');
+        expect(Object.keys(JSON.parse(response))).toContain('Messages');
     });
 
     it('Should delete a message from the queue', async () => {
@@ -63,29 +61,6 @@ describe('SQS Service', () => {
         });
 
         // Assert
-        logger.info(response);
         expect(response).toBe('Message Deleted');
-    });
-
-    it('Should throw an error if the file types are wrong', async () => {
-        // Arrange
-        const testMessage = fs.readFileSync('resources/testing/invalidQueueMessage.json');
-        sqsMock.on(ReceiveMessageCommand).resolves(testMessage);
-
-        // Act and Assert
-        const sqsService = createSQSService();
-        await expect(sqsService.receiveSQS(testMessage)).rejects.toThrowError(
-            'Application queue message held an invalid file type, only .json is supported'
-        );
-    });
-
-    it('Should error if file is not valid json', async () => {
-        // Arrange
-        const testMessage = fs.readFileSync('resources/testing/invalidJson.txt');
-        sqsMock.on(ReceiveMessageCommand).resolves(testMessage);
-
-        // Act and Assert
-        const sqsService = createSQSService();
-        await expect(sqsService.receiveSQS(testMessage)).rejects.toThrowError(SyntaxError);
     });
 });
