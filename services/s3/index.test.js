@@ -5,7 +5,6 @@ const {sdkStreamMixin} = require('@aws-sdk/util-stream-node');
 const {mockClient} = require('aws-sdk-client-mock');
 const {createReadStream} = require('fs');
 const createS3Service = require('./index');
-const logger = require('../logging/logger');
 const testJson = require('../../resources/testing/checkYourAnswers.json');
 
 describe('S3 Service', () => {
@@ -67,10 +66,7 @@ describe('S3 Service', () => {
 
         // Act
         const s3Service = createS3Service();
-        const res = await s3Service.putInS3('bucket', 'resources/testing/output.pdf', 'key');
-
-        // Assert
-        logger.info(res);
+        const res = await s3Service.putInS3('bucket', 'resources/testing/summary.pdf', 'key');
         expect(res).toBe(message);
     });
 });
