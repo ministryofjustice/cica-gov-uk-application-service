@@ -30,6 +30,7 @@ function createSqsService() {
         input.MessageBody = message;
         const command = new SendMessageCommand(input);
         const response = await client.send(command);
+        logger.info(response);
         return response;
     }
 
@@ -40,8 +41,25 @@ function createSqsService() {
     async function deleteSQS(input) {
         const command = new DeleteMessageCommand(input);
         const response = await client.send(command);
-        logger.info('SQS Message Deleted');
         logger.info(response);
+        return response;
+    }
+
+    /**
+     * Validates that the keys received from the queue are all json keys
+     * @param {object} keys - Contains the keys retrieved from the queue
+     */
+    function validateS3Keys(keys) {
+        logger.info(keys);
+        Object.values(keys).forEach(value => {
+            if (value.endsWith('.json')) {
+                logger.info(`S3 Key received from application queue: ${value}`);
+            } else {
+                throw new Error(
+                    'Application queue message held an invalid file type, only .json is supported'
+                );
+            }
+        });
     }
 
     /**
@@ -52,9 +70,9 @@ function createSqsService() {
     async function receiveSQS(input) {
         const command = new ReceiveMessageCommand(input);
         const response = await client.send(command);
-        logger.info('SQS Message Received:');
-        logger.info(response);
-        return response;
+        const s3Keys = JSON.parse(response);
+        validateS3Keys(s3Keys);
+        return s3Keys;
     }
 
     return Object.freeze({

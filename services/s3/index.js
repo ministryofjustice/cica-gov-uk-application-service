@@ -23,6 +23,14 @@ function createS3Service() {
      * @returns JSON object from bucket with key matching given key
      */
     async function getFromS3(bucket, key) {
+        // validates that the S3 response is a JSON
+        function validateS3Response(response) {
+            if (response.ContentType !== 'application/json') {
+                throw new Error(`${response.ContentType} content type is not supported`);
+            } else {
+                logger.info('File retrieved from S3 is valid');
+            }
+        }
         logger.info(process.env.KMS_KEY);
         const content = {
             Bucket: bucket,
@@ -35,13 +43,14 @@ function createS3Service() {
             logger.info('Getting from S3');
             const response = await s3client.send(new GetObjectCommand(content));
             logger.info('Got from S3');
+            validateS3Response(response);
             const str = await response.Body.transformToString();
             const json = JSON.parse(str);
             return json;
         } catch (err) {
             logger.error(err);
+            throw err;
         }
-        return false;
     }
 
     /**
@@ -51,27 +60,31 @@ function createS3Service() {
      */
     async function putInS3(bucket, object, key) {
         logger.info('Putting in S3');
-        fs.readFile(`./${object}`, async function(err, data) {
+        let data;
+        fs.readFile(`./${object}`, function(err, file) {
             if (err) {
                 logger.error(err);
             }
-            const command = new PutObjectCommand({
-                Bucket: bucket,
-                Key: `${key}`,
-                Body: data,
-                contentType: 'application/pdf',
-                ServerSideEncryption: 'aws:kms',
-                SSEKMSKeyId: process.env.KMS_KEY
-            });
-
-            try {
-                const response = await s3client.send(command);
-                return response;
-            } catch (errr) {
-                logger.error(errr);
-                return {};
-            }
+            data = file;
         });
+
+        const command = new PutObjectCommand({
+            Bucket: bucket,
+            Key: `${key}`,
+            Body: data,
+            contentType: 'application/pdf',
+            ServerSideEncryption: 'aws:kms',
+            SSEKMSKeyId: process.env.KMS_KEY
+        });
+
+        try {
+            const response = await s3client.send(command);
+            logger.info(response);
+            return response;
+        } catch (errr) {
+            logger.error(errr);
+            return {};
+        }
     }
 
     return Object.freeze({
