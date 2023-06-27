@@ -15,7 +15,13 @@ const bucket = process.env.S3_BUCKET;
  */
 function parseJSONLocation(message) {
     const messageBody = JSON.parse(message.Body);
-    return messageBody.applicationJSONDocumentSummaryKey;
+    const key = messageBody.applicationJSONDocumentSummaryKey;
+
+    if (!key.endsWith('.json')) {
+        throw new Error('Application JSON document location is not in a valid format (.json)');
+    }
+
+    return key;
 }
 
 /**
