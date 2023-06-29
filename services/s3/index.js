@@ -86,15 +86,6 @@ function createS3Service() {
                 }
             });
         });
-
-        try {
-            const response = await s3client.send(command);
-            logger.info(response);
-            return response;
-        } catch (errr) {
-            logger.error(errr);
-            return {};
-        }
     }
 
     return Object.freeze({
