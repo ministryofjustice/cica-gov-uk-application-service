@@ -67,6 +67,8 @@ describe('S3 Service', () => {
         // Act
         const s3Service = createS3Service();
         const res = await s3Service.putInS3('bucket', 'resources/testing/summary.pdf', 'key');
+
+        // Assert
         expect(res).toBe(message);
     });
 });
