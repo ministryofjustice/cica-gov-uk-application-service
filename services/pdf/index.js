@@ -95,7 +95,7 @@ function createPdfService() {
                     .font('Helvetica')
                     .fillColor('#808080')
                     .text('Protect-Personal', {align: 'center'})
-                    // .image(logoDir, 450, 80, {width: 80})
+                    // .image(logoDir, 450, 80, {width: 80}) - TODO: directory resolution isn't working
                     .text('Tel: 0300 003 3601')
                     .text('CICA, Alexander Bain House')
                     .text('Atlantic Quay, 15 York Street')
