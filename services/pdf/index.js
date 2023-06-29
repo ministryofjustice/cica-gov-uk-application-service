@@ -95,7 +95,7 @@ function createPdfService() {
                     .font('Helvetica')
                     .fillColor('#808080')
                     .text('Protect-Personal', {align: 'center'})
-                    // .image(logoDir, 450, 80, {width: 80}) - TODO: directory resolution isn't working
+                    // .image(logoDir, 450, 80, {width: 80})
                     .text('Tel: 0300 003 3601')
                     .text('CICA, Alexander Bain House')
                     .text('Atlantic Quay, 15 York Street')
@@ -122,12 +122,17 @@ function createPdfService() {
             //     loops through each question in the theme, which are each written using addPDFQuestion
             Object.keys(json.themes).forEach(function(t) {
                 const theme = json.themes[t];
-                pdfDocument.fontSize(17.5).font('Helvetica-Bold');
+                pdfDocument.fontSize(14.5).font('Helvetica-Bold');
 
                 const height = pdfDocument.currentLineHeight();
-                pdfDocument.rect(pdfDocument.x, pdfDocument.y - 5, 500, height + 7).fill('#444444');
+                pdfDocument
+                    .rect(pdfDocument.x - 5, pdfDocument.y - 6, 480, height + 10)
+                    .fill('#000');
 
-                pdfDocument.fillColor('#FFFFFF').text(theme.title, {underline: true});
+                pdfDocument.fillColor('#FFF').text(theme.title, {underline: false});
+
+                pdfDocument.moveDown();
+
                 Object.keys(theme.values).forEach(function(question) {
                     addPDFQuestion(theme.values[question]);
                 });

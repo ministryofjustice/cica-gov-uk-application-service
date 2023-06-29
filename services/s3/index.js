@@ -60,22 +60,31 @@ function createS3Service() {
      * @param {string} pdf  - The name of the pdf to be put into S3
      */
     async function putInS3(bucket, object, key) {
-        logger.info('Putting in S3');
-        let data;
-        fs.readFile(`./${object}`, function(err, file) {
-            if (err) {
-                logger.error(err);
-            }
-            data = file;
-        });
+        return new Promise((res, rej) => {
+            logger.info('Putting in S3');
+            fs.readFile(`./${object}`, async function(error, file) {
+                if (error) {
+                    logger.error(error);
+                    rej(error);
+                }
 
-        const command = new PutObjectCommand({
-            Bucket: bucket,
-            Key: `${key}`,
-            Body: data,
-            contentType: 'application/pdf',
-            ServerSideEncryption: 'aws:kms',
-            SSEKMSKeyId: process.env.KMS_KEY
+                const command = new PutObjectCommand({
+                    Bucket: bucket,
+                    Key: `${key}`,
+                    Body: file,
+                    contentType: 'application/pdf',
+                    ServerSideEncryption: 'aws:kms',
+                    SSEKMSKeyId: process.env.KMS_KEY
+                });
+
+                try {
+                    const response = await s3client.send(command);
+                    res(response);
+                } catch (err) {
+                    logger.error(err);
+                    rej(err);
+                }
+            });
         });
 
         try {

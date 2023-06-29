@@ -25,4 +25,14 @@ describe('Application Service', () => {
         // Assert
         expect(location).toEqual('test/sample-location.json');
     });
+
+    it('Should throw an error if the file types are wrong', async () => {
+        // Arrange
+        const stream = fs.readFileSync('resources/testing/invalidSqsMessage.json');
+
+        // Act and Assert
+        expect(() => {
+            applicationService.parseJSONLocation(JSON.parse(stream).Messages[0]);
+        }).toThrowError('Application JSON document location is not in a valid format (.json)');
+    });
 });
