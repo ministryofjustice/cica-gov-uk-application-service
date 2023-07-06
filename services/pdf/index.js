@@ -134,7 +134,9 @@ function createPdfService() {
                 pdfDocument.moveDown();
 
                 Object.keys(theme.values).forEach(function(question) {
-                    addPDFQuestion(theme.values[question]);
+                    if (!theme.values[question].hideOnSummary) {
+                        addPDFQuestion(theme.values[question]);
+                    }
                 });
             });
 
