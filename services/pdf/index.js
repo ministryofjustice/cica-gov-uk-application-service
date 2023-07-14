@@ -49,6 +49,15 @@ function createPdfService() {
                     // If the question has an html label, use writeHTML to write the label to the pdf
                     // await writeHTML(question.label);
                     logger.info('Keeping writing');
+                } else if (question.id === 'q-applicant-physical-injuries') {
+                    pdfDocument
+                        .fontSize(12.5)
+                        .font('Helvetica-Bold')
+                        .fillColor('#444444')
+                        .text('Physical injuries')
+                        .font('Helvetica');
+                    pdfDocument.text(question.valueLabel.join('\n'));
+                    pdfDocument.moveDown();
                 } else if (question.type === 'simple') {
                     // If the question is simple then write the question to the PDF
                     pdfDocument
@@ -83,19 +92,12 @@ function createPdfService() {
              * Writes the static PDF header
              */
             function writeHeader() {
-                // const logoDir = path.join(__dirname, '../../resources/static/cicaLogo.png');
-
-                // const directoryTree = tree(path.join(__dirname, '../../'), {
-                //     exclude: [/node_modules/]
-                // });
-                // logger.info(directoryTree);
-
                 pdfDocument
                     .fontSize(10)
                     .font('Helvetica')
                     .fillColor('#808080')
                     .text('Protect-Personal', {align: 'center'})
-                    // .image(logoDir, 450, 80, {width: 80})
+                    .image('./public/cicaLogo.png', 450, 80, {width: 80})
                     .text('Tel: 0300 003 3601')
                     .text('CICA, Alexander Bain House')
                     .text('Atlantic Quay, 15 York Street')
@@ -141,8 +143,18 @@ function createPdfService() {
             });
 
             pdfDocument.fillColor('#444444');
-            // Get the HTML string from the consent-summary section of the application json.
-            const bufStr = json.themes.find(t => t.id === 'consent-summary').values[0].label;
+
+            // Consent summary header
+            pdfDocument.fontSize(14.5).font('Helvetica-Bold');
+            const height = pdfDocument.currentLineHeight();
+            pdfDocument.rect(pdfDocument.x - 5, pdfDocument.y - 6, 480, height + 10).fill('#000');
+            pdfDocument.fillColor('#FFF').text('Consent & Declaration', {underline: false});
+            pdfDocument.moveDown();
+
+            pdfDocument.fillColor('#444444');
+
+            // Get the HTML string from the declaration section of the application json.
+            const bufStr = json.declaration.label;
             const htmlBuffer = Buffer.from(bufStr, 'utf8');
 
             PDFKitHTML.parse(htmlBuffer)

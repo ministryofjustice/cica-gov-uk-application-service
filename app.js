@@ -13,6 +13,8 @@ process.env.DCS_LOG_LEVEL = 'debug';
 
 const app = express();
 
+app.use(express.static('public'));
+
 app.use(
     helmet({
         contentSecurityPolicy: {
