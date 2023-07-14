@@ -1,7 +1,6 @@
 {
     "meta": {
-        "caseReference": "23\\700001",
-        "submittedDate": "2023-05-19T13:06:12.693Z"
+        "caseReference": "23\\700001"
     },
     "themes": [
         {
@@ -93,7 +92,7 @@
                     "id": "q-applicant-enter-your-email-address",
                     "type": "simple",
                     "label": "Email address",
-                    "value": "test.testcase@digital.justice.gov.uk",
+                    "value": "foo.bar@somewhere.com",
                     "sectionId": "p-applicant-confirmation-method",
                     "theme": "applicant-details",
                     "format": {
@@ -109,7 +108,7 @@
                             "id": "q-applicant-title",
                             "type": "simple",
                             "label": "Title",
-                            "value": "Mr",
+                            "value": "Miss",
                             "sectionId": "p-applicant-enter-your-name",
                             "theme": "applicant-details"
                         },
@@ -117,7 +116,7 @@
                             "id": "q-applicant-first-name",
                             "type": "simple",
                             "label": "First name",
-                            "value": "Foo",
+                            "value": "Test",
                             "sectionId": "p-applicant-enter-your-name",
                             "theme": "applicant-details"
                         },
@@ -125,7 +124,7 @@
                             "id": "q-applicant-last-name",
                             "type": "simple",
                             "label": "Last name",
-                            "value": "Bar",
+                            "value": "Testcase",
                             "sectionId": "p-applicant-enter-your-name",
                             "theme": "applicant-details"
                         }
@@ -146,7 +145,7 @@
                     "id": "q-applicant-enter-your-date-of-birth",
                     "type": "simple",
                     "label": "Date of birth",
-                    "value": "1970-01-01T00:00:00.000Z",
+                    "value": "1990-02-06T00:00:00.000Z",
                     "sectionId": "p-applicant-enter-your-date-of-birth",
                     "theme": "applicant-details",
                     "format": {
@@ -163,7 +162,23 @@
                             "id": "q-applicant-building-and-street",
                             "type": "simple",
                             "label": "Building and street",
-                            "value": "1 Test Lane",
+                            "value": "Alexander Bain House",
+                            "sectionId": "p-applicant-enter-your-address",
+                            "theme": "applicant-details"
+                        },
+                        {
+                            "id": "q-applicant-building-and-street-2",
+                            "type": "simple",
+                            "label": "Building and street line 2",
+                            "value": "15 York Street",
+                            "sectionId": "p-applicant-enter-your-address",
+                            "theme": "applicant-details"
+                        },
+                        {
+                            "id": "q-applicant-building-and-street-3",
+                            "type": "simple",
+                            "label": "Building and street line 3",
+                            "value": "Financial District",
                             "sectionId": "p-applicant-enter-your-address",
                             "theme": "applicant-details"
                         },
@@ -171,7 +186,7 @@
                             "id": "q-applicant-town-or-city",
                             "type": "simple",
                             "label": "Town or city",
-                            "value": "Testertown",
+                            "value": "Glasgow",
                             "sectionId": "p-applicant-enter-your-address",
                             "theme": "applicant-details"
                         },
@@ -179,7 +194,7 @@
                             "id": "q-applicant-county",
                             "type": "simple",
                             "label": "County (optional)",
-                            "value": "Testcounty",
+                            "value": "City of Glasgow",
                             "sectionId": "p-applicant-enter-your-address",
                             "theme": "applicant-details"
                         },
@@ -187,12 +202,20 @@
                             "id": "q-applicant-postcode",
                             "type": "simple",
                             "label": "Postcode (optional)",
-                            "value": "G2 8DU",
+                            "value": "G2 8JQ",
                             "sectionId": "p-applicant-enter-your-address",
                             "theme": "applicant-details"
                         }
                     ],
                     "sectionId": "p-applicant-enter-your-address",
+                    "theme": "applicant-details"
+                },
+                {
+                    "id": "q-applicant-enter-your-telephone-number",
+                    "type": "simple",
+                    "label": "Telephone number",
+                    "value": "07712345678",
+                    "sectionId": "p-applicant-enter-your-telephone-number",
                     "theme": "applicant-details"
                 }
             ]
@@ -224,7 +247,7 @@
                     "id": "q-applicant-when-did-the-crime-happen",
                     "type": "simple",
                     "label": "When did the crime happen?",
-                    "value": "2023-01-01T00:00:00.000Z",
+                    "value": "2022-03-04T00:00:00.000Z",
                     "sectionId": "p-applicant-when-did-the-crime-happen",
                     "theme": "crime",
                     "format": {
@@ -250,7 +273,7 @@
                             "id": "q-applicant-scottish-town-or-city",
                             "type": "simple",
                             "label": "Town or city",
-                            "value": "Aberdeen",
+                            "value": "Glasgow",
                             "sectionId": "p-applicant-where-in-scotland-did-it-happen",
                             "theme": "crime"
                         },
@@ -258,7 +281,7 @@
                             "id": "q-applicant-scottish-location",
                             "type": "simple",
                             "label": "Location",
-                            "value": "Nightclub",
+                            "value": "Central",
                             "sectionId": "p-applicant-where-in-scotland-did-it-happen",
                             "theme": "crime"
                         }
@@ -270,7 +293,7 @@
                     "id": "q--when-was-the-crime-reported-to-police",
                     "type": "simple",
                     "label": "When was the crime reported?",
-                    "value": "2023-01-01T00:00:00.000Z",
+                    "value": "2022-03-04T00:00:00.000Z",
                     "sectionId": "p--when-was-the-crime-reported-to-police",
                     "theme": "crime",
                     "format": {
@@ -282,8 +305,8 @@
                     "id": "q-police-force-id",
                     "type": "simple",
                     "label": "Which police force is investigating the crime?",
-                    "value": 10002424,
-                    "valueLabel": "Police Scotland Fife",
+                    "value": 10000140,
+                    "valueLabel": "Greater Manchester Police",
                     "sectionId": "p--which-police-force-is-investigating-the-crime",
                     "theme": "crime"
                 },
@@ -291,7 +314,7 @@
                     "id": "q--whats-the-crime-reference-number",
                     "type": "simple",
                     "label": "What's the crime reference number?",
-                    "value": "123refABC",
+                    "value": "CR123456",
                     "sectionId": "p--whats-the-crime-reference-number",
                     "theme": "crime"
                 },
@@ -299,17 +322,9 @@
                     "id": "q-applicant-describe-incident",
                     "type": "simple",
                     "label": "Do you want to describe the crime?",
-                    "value": true,
-                    "valueLabel": "Yes",
+                    "value": false,
+                    "valueLabel": "No",
                     "sectionId": "p-applicant-describe-incident",
-                    "theme": "crime"
-                },
-                {
-                    "id": "q-applicant-incident-description",
-                    "type": "simple",
-                    "label": "Brief description of the crime",
-                    "value": "Some words about the crime. Big fight.",
-                    "sectionId": "p-applicant-incident-description",
                     "theme": "crime"
                 }
             ]
@@ -323,26 +338,9 @@
                     "id": "q-offender-do-you-know-the-name-of-the-offender",
                     "type": "simple",
                     "label": "Do you know the offender's name?",
-                    "value": true,
-                    "valueLabel": "Yes",
-                    "sectionId": "p-offender-do-you-know-the-name-of-the-offender",
-                    "theme": "offender"
-                },
-                {
-                    "id": "q-offender-enter-offenders-name",
-                    "type": "simple",
-                    "label": "Offenders name",
-                    "value": "Baz",
-                    "sectionId": "p-offender-enter-offenders-name",
-                    "theme": "offender"
-                },
-                {
-                    "id": "q-offender-do-you-have-contact-with-offender",
-                    "type": "simple",
-                    "label": "Do you have contact with the offender?",
                     "value": false,
                     "valueLabel": "No",
-                    "sectionId": "p-offender-do-you-have-contact-with-offender",
+                    "sectionId": "p-offender-do-you-know-the-name-of-the-offender",
                     "theme": "offender"
                 }
             ]
@@ -365,71 +363,60 @@
                     "id": "q-applicant-physical-injury",
                     "type": "simple",
                     "label": "What was injured?",
-                    "value": ["arms", "legs"],
-                    "valueLabel": ["Arms or hands", "Legs or feet"],
+                    "value": ["upper", "arms"],
+                    "valueLabel": ["Head, face or neck", "Arms or hands"],
                     "sectionId": "p-applicant-physical-injury",
+                    "theme": "injuries"
+                },
+                {
+                    "id": "q-applicant-physical-injury-upper",
+                    "type": "simple",
+                    "label": "Head, face or neck injuries",
+                    "value": ["head", "eye", "ear"],
+                    "valueLabel": ["Head or brain", "Eye or eyesight", "Ear or hearing"],
+                    "sectionId": "p-applicant-physical-injury-upper",
+                    "theme": "injuries"
+                },
+                {
+                    "id": "q-applicant-physical-injuries",
+                    "type": "simple",
+                    "label": "Head injuries",
+                    "value": [
+                        "phyinj-139",
+                        "phyinj-149",
+                        "phyinj-026",
+                        "phyinj-006",
+                        "phyinj-137",
+                        "phyinj-083",
+                        "phyinj-161"
+                    ],
+                    "valueLabel": [
+                        "Quadriplegia or tetraplegia (paralysis of all 4 limbs)",
+                        "Other",
+                        "Damaged or detached retina",
+                        "Broken ear bone",
+                        "Hemiplegia (paralysis of one side of the the body)",
+                        "Scars",
+                        "Cartilage"
+                    ],
+                    "sectionId": "p-applicant-physical-injury-upper-head",
+                    "theme": "injuries"
+                },
+                {
+                    "id": "q-applicant-physical-injuries-upper-head-other",
+                    "type": "simple",
+                    "label": "Other head or brain injuries",
+                    "value": "an alternative Brain Injury",
+                    "sectionId": "p-applicant-physical-injury-upper-head",
                     "theme": "injuries"
                 },
                 {
                     "id": "q-applicant-physical-injury-arms",
                     "type": "simple",
                     "label": "Arm injuries",
-                    "value": ["arm", "skin"],
-                    "valueLabel": ["Arm", "Skin"],
+                    "value": ["arm", "skin", "muscle"],
+                    "valueLabel": ["Arm", "Skin", "Tissue"],
                     "sectionId": "p-applicant-physical-injury-arms",
-                    "theme": "injuries"
-                },
-                {
-                    "id": "q-applicant-physical-injuries",
-                    "type": "simple",
-                    "label": "Arm injuries",
-                    "value": ["phyinj-099"],
-                    "valueLabel": ["Broken arm"],
-                    "sectionId": "p-applicant-physical-injury-arms-arm",
-                    "theme": "injuries"
-                },
-                {
-                    "id": "q-applicant-physical-injuries",
-                    "type": "simple",
-                    "label": "Arm or hand skin injuries",
-                    "value": ["phyinj-107", "phyinj-108"],
-                    "valueLabel": ["Cuts", "Bruises"],
-                    "sectionId": "p-applicant-physical-injury-arms-skin",
-                    "theme": "injuries"
-                },
-                {
-                    "id": "q-applicant-physical-injury-legs",
-                    "type": "simple",
-                    "label": "Leg injuries",
-                    "value": ["leg", "toes"],
-                    "valueLabel": ["Leg", "Toes"],
-                    "sectionId": "p-applicant-physical-injury-legs",
-                    "theme": "injuries"
-                },
-                {
-                    "id": "q-applicant-physical-injuries",
-                    "type": "simple",
-                    "label": "Leg injuries",
-                    "value": ["phyinj-149"],
-                    "valueLabel": ["Other"],
-                    "sectionId": "p-applicant-physical-injury-legs-leg",
-                    "theme": "injuries"
-                },
-                {
-                    "id": "q-applicant-physical-injuries-legs-leg-other",
-                    "type": "simple",
-                    "label": "Other leg injuries",
-                    "value": "Small cuts",
-                    "sectionId": "p-applicant-physical-injury-legs-leg",
-                    "theme": "injuries"
-                },
-                {
-                    "id": "q-applicant-physical-injuries",
-                    "type": "simple",
-                    "label": "Toe injuries",
-                    "value": ["phyinj-130"],
-                    "valueLabel": ["Broken toe"],
-                    "sectionId": "p-applicant-physical-injury-legs-toes",
                     "theme": "injuries"
                 },
                 {
@@ -502,7 +489,7 @@
                     "id": "q-applicant-affect-on-daily-life-dmi",
                     "type": "simple",
                     "label": "How your injuries have affected your daily life",
-                    "value": "Slowed running times.\n\nOther things.",
+                    "value": "How the injuries have affected their daily life",
                     "sectionId": "p-applicant-affect-on-daily-life-dmi",
                     "theme": "impact"
                 }
@@ -517,7 +504,7 @@
                     "id": "q-applicant-treatment-for-physical-injuries",
                     "type": "simple",
                     "label": "Treatment for physical injuries",
-                    "value": "Hot stones.",
+                    "value": "The treatment I am receiving for my physical injuries",
                     "sectionId": "p-applicant-treatment-for-physical-injuries",
                     "theme": "treatment"
                 },
@@ -557,7 +544,7 @@
                             "id": "q-gp-organisation-name",
                             "type": "simple",
                             "label": "Practice name",
-                            "value": "TestDoctor",
+                            "value": "GP Practice",
                             "sectionId": "p-gp-enter-your-address",
                             "theme": "treatment"
                         },
@@ -565,7 +552,23 @@
                             "id": "q-gp-building-and-street",
                             "type": "simple",
                             "label": "Building and street",
-                            "value": "1 Doctor street",
+                            "value": "GP Building",
+                            "sectionId": "p-gp-enter-your-address",
+                            "theme": "treatment"
+                        },
+                        {
+                            "id": "q-gp-building-and-street-2",
+                            "type": "simple",
+                            "label": "Building and street line 2",
+                            "value": "GP Street",
+                            "sectionId": "p-gp-enter-your-address",
+                            "theme": "treatment"
+                        },
+                        {
+                            "id": "q-gp-building-and-street-3",
+                            "type": "simple",
+                            "label": "Building and street line 3",
+                            "value": "GP Street Line 3",
                             "sectionId": "p-gp-enter-your-address",
                             "theme": "treatment"
                         },
@@ -573,7 +576,15 @@
                             "id": "q-gp-town-or-city",
                             "type": "simple",
                             "label": "Town or city",
-                            "value": "Doctortown",
+                            "value": "GP Town",
+                            "sectionId": "p-gp-enter-your-address",
+                            "theme": "treatment"
+                        },
+                        {
+                            "id": "q-gp-county",
+                            "type": "simple",
+                            "label": "County (optional)",
+                            "value": "GP County",
                             "sectionId": "p-gp-enter-your-address",
                             "theme": "treatment"
                         },
@@ -581,12 +592,86 @@
                             "id": "q-gp-postcode",
                             "type": "simple",
                             "label": "Postcode (optional)",
-                            "value": "DR1 4RT",
+                            "value": "GP1 1GP",
                             "sectionId": "p-gp-enter-your-address",
                             "theme": "treatment"
                         }
                     ],
                     "sectionId": "p-gp-enter-your-address",
+                    "theme": "treatment"
+                },
+                {
+                    "id": "q-applicant-dentist-visited",
+                    "type": "simple",
+                    "label": "Have you seen a dentist?",
+                    "value": true,
+                    "valueLabel": "Yes",
+                    "sectionId": "p-applicant-dentist-visited",
+                    "theme": "treatment"
+                },
+                {
+                    "id": "applicant-dentist-address",
+                    "type": "composite",
+                    "label": "What is the dentist's address?",
+                    "values": [
+                        {
+                            "id": "q-applicant-dentist-organisation-name",
+                            "type": "simple",
+                            "label": "Practice name",
+                            "value": "Dentist Practice",
+                            "sectionId": "p-applicant-dentist-address",
+                            "theme": "treatment"
+                        },
+                        {
+                            "id": "q-applicant-dentist-address-building-and-street",
+                            "type": "simple",
+                            "label": "Building and street",
+                            "value": "Dentist Building",
+                            "sectionId": "p-applicant-dentist-address",
+                            "theme": "treatment"
+                        },
+                        {
+                            "id": "q-applicant-dentist-address-building-and-street-2",
+                            "type": "simple",
+                            "label": "Building and street line 2",
+                            "value": "Dentist Street",
+                            "sectionId": "p-applicant-dentist-address",
+                            "theme": "treatment"
+                        },
+                        {
+                            "id": "q-applicant-dentist-address-building-and-street-3",
+                            "type": "simple",
+                            "label": "Building and street line 3",
+                            "value": "Dentist Street Line 3",
+                            "sectionId": "p-applicant-dentist-address",
+                            "theme": "treatment"
+                        },
+                        {
+                            "id": "q-applicant-dentist-address-town-or-city",
+                            "type": "simple",
+                            "label": "Town or city",
+                            "value": "Dentist Town",
+                            "sectionId": "p-applicant-dentist-address",
+                            "theme": "treatment"
+                        },
+                        {
+                            "id": "q-applicant-dentist-address-county",
+                            "type": "simple",
+                            "label": "County (optional)",
+                            "value": "Dentist County",
+                            "sectionId": "p-applicant-dentist-address",
+                            "theme": "treatment"
+                        },
+                        {
+                            "id": "q-applicant-dentist-address-postcode",
+                            "type": "simple",
+                            "label": "Postcode (optional)",
+                            "value": "DP1 1DP",
+                            "sectionId": "p-applicant-dentist-address",
+                            "theme": "treatment"
+                        }
+                    ],
+                    "sectionId": "p-applicant-dentist-address",
                     "theme": "treatment"
                 }
             ]
@@ -618,7 +703,7 @@
                     "id": "q-applicant-applied-for-other-compensation-briefly-explain-why-not",
                     "type": "simple",
                     "label": "Reasons for not applying for other compensation",
-                    "value": "I didn't realise you could apply.",
+                    "value": "Did not apply for other forms of compensation",
                     "sectionId": "p-applicant-applied-for-other-compensation-briefly-explain-why-not",
                     "theme": "other-compensation"
                 }
@@ -639,20 +724,13 @@
                     "theme": "additional-info"
                 }
             ]
-        },
-        {
-            "type": "theme",
-            "id": "consent-summary",
-            "title": "Consent summary",
-            "values": [
-                {
-                    "type": "simple",
-                    "id": "q-applicant-declaration",
-                    "label": "<div id=\"declaration\"> <p class=\"govuk-body\"> You have told us that you are Mr Adam Caldwell and you are applying on behalf of yourself.</p> <p class=\"govuk-body\">By submitting this application, you confirm that you understand the following:</p> <ul class=\"govuk-list govuk-list--bullet\"> <li>the information given in this application for compensation is true</li> <li>Criminal Injuries Compensation Authority (CICA) may share and receive information with the following parties for the purposes of processing this application for compensation or verifying information provided:</li> <ul> <li>police, prosecutors and ACRO Criminal Records Office, including for the purposes of obtaining a report of the crime and a record of any criminal convictions you may have</li> <li>medical organisations, practitioners, and police medical staff to obtain medical evidence - including medical records and expert reports. CICA will let you know if this is required</li> <li>any other individuals or organisations where necessary to process this application</li> <li>any representative appointed to act for you in the course of this application</li> </ul> <li>CICA must be notified immediately of any change in circumstances relevant to this application, including any change of address and information about any other claim or proceedings which may give rise to a separate award or payment in respect of your injuries</li> </ul> <h2 class=\"govuk-heading-m\">Providing wrong or misleading information</h2> <p class=\"govuk-body\">If untrue or misleading information is deliberately provided, compensation may be refused and the person(s) responsible may be prosecuted.</p> <p class=\"govuk-body\">Read our privacy notice to see <a href=\"https://www.gov.uk/guidance/cica-privacy-notice\" class=\"govuk-link\" target=\"_blank\">how we use your data (opens in new tab)</a>. </p> <h2 class=\"govuk-heading-m\">Information about appointing a legal or another representative</h2> <p class=\"govuk-body\">It is not necessary to appoint a legal or other representative to act on a victim’s behalf. If a representative is appointed at any stage, please be aware that:</p> <ul class=\"govuk-list govuk-list--bullet\"> <li>CICA cannot meet their costs </li> <li>we will only communicate directly with any appointed representative</li> </ul> <p class=\"govuk-body\">If we make an award, we will pay it only to the victim or their legal representative. This is unless the application has been made on behalf of:</p> <ul class=\"govuk-list govuk-list--bullet\"> <li>an adult who cannot manage their own financial affairs</li> <li>a child who is under 18 years of age</li> </ul> <p class=\"govuk-body\"> It is our general policy to put an award for a child in an interest-earning deposit account until they reach the age of 18.</p> <p class=\"govuk-body\"> If a monetary award is to be made and there is a dispute about outstanding legal fees, it is our policy to retain the disputed amount until the dispute has been resolved.</p> <p class=\"govuk-body\"> If it is decided that a representative’s services are no longer required, CICA must be notified in writing as soon as possible.</p> </div>",
-                    "value": "i-agree",
-                    "valueLabel": "I have read and understood the declaration"
-                }
-            ]
         }
-    ]
+    ],
+    "declaration": {
+        "type": "simple",
+        "id": "p-applicant-declaration",
+        "label": "<div id=\"declaration\"> <p class=\"govuk-body\"> You have told us that you are Miss Test Testcase and you are applying on behalf of yourself.</p> <p class=\"govuk-body\">By submitting this application, you confirm that you understand the following:</p> <ul class=\"govuk-list govuk-list--bullet\"> <li>the information given in this application for compensation is true</li> <li>Criminal Injuries Compensation Authority (CICA) may share and receive information with the following parties for the purposes of processing this application for compensation or verifying information provided:</li> <ul> <li>police, prosecutors and ACRO Criminal Records Office, including for the purposes of obtaining a report of the crime and a record of any criminal convictions you may have</li> <li>medical organisations, practitioners, and police medical staff to obtain medical evidence - including medical records and expert reports. CICA will let you know if this is required</li> <li>any other individuals or organisations where necessary to process this application</li> <li>any representative appointed to act for you in the course of this application</li> </ul> <li>CICA must be notified immediately of any change in circumstances relevant to this application, including any change of address and information about any other claim or proceedings which may give rise to a separate award or payment in respect of your injuries</li> </ul> <h2 class=\"govuk-heading-m\">Providing wrong or misleading information</h2> <p class=\"govuk-body\">If untrue or misleading information is deliberately provided, compensation may be refused and the person(s) responsible may be prosecuted.</p> <p class=\"govuk-body\">Read our privacy notice to see <a href=\"https://www.gov.uk/guidance/cica-privacy-notice\" class=\"govuk-link\" target=\"_blank\">how we use your data (opens in new tab)</a>. </p> <h2 class=\"govuk-heading-m\">Information about appointing a legal or another representative</h2> <p class=\"govuk-body\">It is not necessary to appoint a legal or other representative to act on a victim’s behalf. If a representative is appointed at any stage, please be aware that:</p> <ul class=\"govuk-list govuk-list--bullet\"> <li>CICA cannot meet their costs </li> <li>we will only communicate directly with any appointed representative</li> </ul> <p class=\"govuk-body\">If we make an award, we will pay it only to the victim or their legal representative. This is unless the application has been made on behalf of:</p> <ul class=\"govuk-list govuk-list--bullet\"> <li>an adult who cannot manage their own financial affairs</li> <li>a child who is under 18 years of age</li> </ul> <p class=\"govuk-body\"> It is our general policy to put an award for a child in an interest-earning deposit account until they reach the age of 18.</p> <p class=\"govuk-body\"> If a monetary award is to be made and there is a dispute about outstanding legal fees, it is our policy to retain the disputed amount until the dispute has been resolved.</p> <p class=\"govuk-body\"> If it is decided that a representative’s services are no longer required, CICA must be notified in writing as soon as possible.</p> </div>",
+        "value": "i-agree",
+        "valueLabel": "I have read and understood the declaration"
+    }
 }
