@@ -4,8 +4,6 @@ const PDFKitHTML = require('@shipper/pdfkit-html-simple');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const moment = require('moment');
-// const path = require('path');
-// const tree = require('tree-node-cli');
 const logger = require('../logging/logger');
 
 /** Returns PDF Service object with a function to write a JSON to a PDF */
