@@ -126,7 +126,7 @@ function createPdfService() {
                 const {bottom} = document.page.margins;
                 document.page.margins.bottom = 0;
 
-                const date = moment(json.meta.dateSubmitted).format('DD/MM/YYYY hh:mm A');
+                const date = moment(json.meta.submittedDate).format('DD/MM/YYYY hh:mm A');
                 document
                     .fontSize(10)
                     .font('Helvetica')
