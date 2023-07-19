@@ -16,7 +16,8 @@ function createPdfService() {
      */
     async function writeJSONToPDF(json, pdfLoc) {
         return new Promise(res => {
-            const pdfDocument = new PDFDocument();
+            // Initialise core PDF Document
+            const pdfDocument = new PDFDocument({bufferPages: true});
 
             /**
              * Writes a Subquestion of a composite question to the PDF
@@ -116,6 +117,37 @@ function createPdfService() {
                     .moveDown();
             }
 
+            /**
+             * Writes footer to given document (called per page via buffer)
+             * @param {PDFDocument} document
+             */
+            function writeFooter(document) {
+                // Need to set the bottom margin to zero to allow writing the footer into the margin
+                const {bottom} = document.page.margins;
+                document.page.margins.bottom = 0;
+
+                const date = moment(json.meta.dateSubmitted).format('DD/MM/YYYY hh:mm A');
+                document
+                    .fontSize(10)
+                    .font('Helvetica')
+                    .fillColor('#808080')
+                    .text(
+                        `Case reference no.:         ${json.meta.caseReference}        Submitted on:        ${date}`,
+                        0,
+                        document.page.height - 25,
+                        {
+                            align: 'center',
+                            lineBreak: false,
+                            width: document.page.width
+                        }
+                    );
+                // Reset text writer position
+                document.text('', 50, 50);
+                // Reset the bottom margin back to what it was
+                document.page.margins.bottom = bottom;
+            }
+
+            // Write the main header to the beginning of the document
             writeHeader();
 
             // Loops over each theme in the json, and for each writes the header and then
@@ -174,6 +206,12 @@ function createPdfService() {
                         document.on('end', function() {
                             resolve(Buffer.concat(buffers));
                         });
+
+                        const pages = document.bufferedPageRange();
+                        for (let i = 0; i < pages.count; i += 1) {
+                            document.switchToPage(i);
+                            writeFooter(document);
+                        }
 
                         document.flushPages();
                         document.end();
