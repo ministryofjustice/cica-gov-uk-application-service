@@ -12,7 +12,7 @@ describe('Application Service', () => {
         const location = applicationService.generatePDFLocation(JSON.parse(stream));
 
         // Assert
-        expect(location).toEqual('23-700001/application-summary.pdf');
+        expect(location).toEqual('23-800001/application-summary.pdf');
     });
 
     it('Should parse the JSON location from an SQS message', async () => {
@@ -34,5 +34,20 @@ describe('Application Service', () => {
         expect(() => {
             applicationService.parseJSONLocation(JSON.parse(stream).Messages[0]);
         }).toThrowError('Application JSON document location is not in a valid format (.json)');
+    });
+
+    it('Should duplicate the application JSON file having updated the reelvant data for a split app', async () => {
+        // Arrange
+        const stream = fs.readFileSync('resources/testing/checkYourAnswers.json');
+        const application = JSON.parse(stream);
+        const path = './resources/temp/duplicate.json';
+
+        // Act and Assert
+        await applicationService.duplicateJson(application, path);
+        expect(fs.existsSync(path)).toBeTruthy();
+        expect(JSON.parse(fs.readFileSync(path)).meta.caseReference).toStrictEqual(
+            application.meta.funeralReference
+        );
+        expect(JSON.parse(fs.readFileSync(path)).meta.splitFuneral).toBeTruthy();
     });
 });
