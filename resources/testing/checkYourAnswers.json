@@ -18,7 +18,11 @@
                     "valueLabel": "Start a new application",
                     "sectionId": "p--new-or-existing-application",
                     "theme": "about-application",
-                    "hideOnSummary": true
+                    "meta": {
+                        "integration": {
+                            "hideOnSummary": true
+                        }
+                    }
                 },
                 {
                     "id": "q-applicant-fatal-claim",

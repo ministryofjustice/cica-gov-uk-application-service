@@ -166,7 +166,7 @@ function createPdfService() {
                 pdfDocument.moveDown();
 
                 Object.keys(theme.values).forEach(function(question) {
-                    if (!theme.values[question].hideOnSummary) {
+                    if (!theme.values[question].meta?.integration?.hideOnSummary) {
                         addPDFQuestion(theme.values[question]);
                     }
                 });
