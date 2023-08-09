@@ -76,7 +76,6 @@ async function processPdf(applicationJson, jsonKey, temporaryLocation) {
 async function duplicateJson(applicationJson, temporaryLocation) {
     applicationJson.meta.caseReference = applicationJson.meta.funeralReference;
     applicationJson.meta.splitFuneral = true;
-    applicationJson.ContentType = 'application/json';
 
     return new Promise((resolve, reject) => {
         fs.writeFile(temporaryLocation, JSON.stringify(applicationJson), err => {
