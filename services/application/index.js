@@ -116,7 +116,7 @@ async function processMessage(message) {
         // Modify and duplicate JSON
         const duplicateKey = `${path.parse(jsonKey).name}-split.json`;
         const tempPath = `${temporaryLocation}/duplicate.json`;
-        duplicateJson(applicationJson, tempPath);
+        await duplicateJson(applicationJson, tempPath);
 
         // Upload the new JSON to S3 for the Tempus Broker to process as a separate application
         await s3Service.putInS3(bucket, tempPath, duplicateKey);
