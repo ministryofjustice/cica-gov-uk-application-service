@@ -56,7 +56,8 @@ function createS3Service() {
     /**
      * Puts given pdf in a given S3 bucket
      * @param {string} bucket - The bucket to put the pdf in
-     * @param {string} pdf  - The name of the pdf to be put into S3
+     * @param {string} object  - The name of the object to be put into S3
+     * @param {string} key - The key to be put in S3
      */
     async function putInS3(bucket, object, key) {
         return new Promise((res, rej) => {
@@ -67,11 +68,22 @@ function createS3Service() {
                     rej(error);
                 }
 
+                const splitString = object.split('.');
+                let contentType = splitString[splitString.length - 1];
+                if (contentType === 'pdf') {
+                    contentType = 'application/pdf';
+                } else if (contentType === 'json') {
+                    contentType = 'application/json';
+                } else {
+                    const unsupportedFileError = new Error('Unsupported file type');
+                    logger.error(unsupportedFileError);
+                    rej(unsupportedFileError);
+                }
                 const command = new PutObjectCommand({
                     Bucket: bucket,
                     Key: `${key}`,
                     Body: file,
-                    contentType: 'application/pdf',
+                    ContentType: contentType,
                     ServerSideEncryption: 'aws:kms',
                     SSEKMSKeyId: process.env.KMS_KEY
                 });
