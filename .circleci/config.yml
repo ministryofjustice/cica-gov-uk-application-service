@@ -106,7 +106,7 @@ jobs:
             docker tag cica/cica-repo-dev:latest ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
             docker push ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
 
-            if [ "${CIRCLE_BRANCH}" ==  "application-service-deploy" || "${CIRCLE_BRANCH}" == "application-service-deploy-to-staging" ]; then
+            if [ "${CIRCLE_BRANCH}" ==  "application-service-deploy" || "${CIRCLE_BRANCH}" ==  "application-service-deploy-to-uat" || "${CIRCLE_BRANCH}" == "application-service-deploy-to-staging" ]; then
                docker tag cica/cica-repo-dev:latest ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
                docker push ${ECR_REPOSITORY}/cica/cica-repo-dev:${CIRCLE_SHA1}
             fi
@@ -237,6 +237,7 @@ workflows:
             branches:
               only:
                 - application-service-deploy
+                - application-service-deploy-to-uat
                 - application-service-deploy-to-staging
       - deploy_to_dev:
           requires:
@@ -250,13 +251,11 @@ workflows:
             - push_image
             - deploy_to_dev
       - deploy_to_uat:
-          #          type: approval
           requires:
-            - push_image
             - deploy_to_uat_approval
           filters:
             branches:
-              only: application-service-deploy
+              only: application-service-deploy-to-uat
       - deploy_to_prod_approval:
           type: approval
           requires:
