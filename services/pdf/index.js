@@ -5,6 +5,7 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const moment = require('moment');
 const logger = require('../logging/logger');
+const physicalInjuries = require('../constants/physical-injuries');
 
 /** Returns PDF Service object with a function to write a JSON to a PDF */
 function createPdfService() {
@@ -49,13 +50,17 @@ function createPdfService() {
                     // await writeHTML(question.label);
                     logger.info('Keeping writing');
                 } else if (question.id === 'q-applicant-physical-injuries') {
+                    let injuryString = '';
+                    question.value.forEach(injury => {
+                        injuryString += `\n${physicalInjuries[injury]}`;
+                    });
                     pdfDocument
                         .fontSize(12.5)
                         .font('Helvetica-Bold')
                         .fillColor('#444444')
                         .text('Physical injuries')
                         .font('Helvetica');
-                    pdfDocument.text(question.valueLabel.join('\n'));
+                    pdfDocument.text(injuryString);
                     pdfDocument.moveDown();
                 } else if (question.type === 'simple') {
                     // If the question is simple then write the question to the PDF
