@@ -158,6 +158,9 @@ function createPdfService() {
                 const yPos = pdfDocument.y;
                 const lineHeight = pdfDocument.currentLineHeight();
 
+                // If we are too close to the bottom of the page, start writing the header
+                // to the top of a new page instead. This is calculated based on the current Y position
+                // in relation to the bottom border of the page, with a buffer of (25 + line height)
                 if (yPos > bottomBorder - bottomMargin - lineHeight - 25) {
                     pdfDocument.addPage();
                 }
