@@ -9,6 +9,7 @@ spec:
       labels:
         app: application-service-app-stag
     spec:
+      serviceAccountName: irsaappservice
       containers:
         - name: application-service
           image: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/cica/cica-repo-stag:latest
@@ -21,16 +22,6 @@ spec:
                 secretKeyRef:
                   name: application-sqs
                   key: sqs_id
-            - name: ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: app-service-sqs-secret
-                  key: access_key_id
-            - name: SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: app-service-sqs-secret
-                  key: secret_access_key
             - name: TEMPUS_QUEUE_ID
               valueFrom:
                 secretKeyRef:
