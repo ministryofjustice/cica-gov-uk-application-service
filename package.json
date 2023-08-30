@@ -19,8 +19,8 @@
         "lint:fix": "eslint --fix ."
     },
     "dependencies": {
-        "@aws-sdk/client-s3": "^3.325.0",
-        "@aws-sdk/client-sqs": "^3.332.0",
+        "@aws-sdk/client-s3": "^3.400.0",
+        "@aws-sdk/client-sqs": "^3.398.0",
         "@aws-sdk/util-stream-node": "^3.350.0",
         "@shipper/pdfkit-html-simple": "github:InformedSolutions/pdfkit-html-simple#v1.0.4",
         "@slack/webhook": "^6.0.0",
