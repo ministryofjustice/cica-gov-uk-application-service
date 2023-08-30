@@ -126,7 +126,7 @@ function createPdfService() {
                 const {bottom} = document.page.margins;
                 document.page.margins.bottom = 0;
 
-                const date = moment(json.meta.submittedDate).format('DD/MM/YYYY hh:mm A');
+                const date = moment().format('DD/MM/YYYY hh:mm A');
                 document
                     .fontSize(10)
                     .font('Helvetica')
@@ -153,6 +153,18 @@ function createPdfService() {
             // Loops over each theme in the json, and for each writes the header and then
             //     loops through each question in the theme, which are each written using addPDFQuestion
             Object.keys(json.themes).forEach(function(t) {
+                const bottomMargin = pdfDocument.page.margins.bottom;
+                const bottomBorder = pdfDocument.page.height;
+                const yPos = pdfDocument.y;
+                const lineHeight = pdfDocument.currentLineHeight();
+
+                // If we are too close to the bottom of the page, start writing the header
+                // to the top of a new page instead. This is calculated based on the current Y position
+                // in relation to the bottom border of the page, with a buffer of (25 + line height)
+                if (yPos > bottomBorder - bottomMargin - lineHeight - 25) {
+                    pdfDocument.addPage();
+                }
+
                 const theme = json.themes[t];
                 pdfDocument.fontSize(14.5).font('Helvetica-Bold');
 
@@ -184,7 +196,15 @@ function createPdfService() {
             pdfDocument.fillColor('#444444');
 
             // Get the HTML string from the declaration section of the application json.
-            const bufStr = json.declaration.label;
+            let bufStr = json.declaration.label;
+            bufStr = `
+                <style>p { margin: 10px;}</style>
+                ${bufStr}
+                <p style="font-weight: bold;">Date: ${moment(json.meta.submittedDate).format(
+                    'DD/MM/YYYY'
+                )}</p>
+                <p style="font-weight: bold;">I have read and understood the information and declaration</p>
+                `;
             const htmlBuffer = Buffer.from(bufStr, 'utf8');
 
             PDFKitHTML.parse(htmlBuffer)
