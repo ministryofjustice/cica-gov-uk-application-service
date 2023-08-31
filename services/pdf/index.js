@@ -9,6 +9,43 @@ const logger = require('../logging/logger');
 /** Returns PDF Service object with a function to write a JSON to a PDF */
 function createPdfService() {
     /**
+     * Calculates the type of application to be displayed on the Summary form.
+     * @param {JSON} applicationJson
+     * @returns string representation of application type
+     */
+    function calculateApplicationType(applicationJson) {
+        let type = 'Unknown';
+
+        if (
+            applicationJson.themes
+                .find(t => t.id === 'about-application')
+                .values.find(q => q.id === 'q-applicant-fatal-claim').value
+        ) {
+            if (applicationJson.meta?.splitFuneral) {
+                type = 'Funeral';
+            } else {
+                type = 'Fatal';
+            }
+        } else if (
+            applicationJson.themes
+                .find(t => t.id === 'crime')
+                .values.find(q => q.id === 'q-applicant-did-the-crime-happen-once-or-over-time')
+                .value === 'over a period of time'
+        ) {
+            type = 'Period of abuse';
+        } else if (
+            applicationJson.themes
+                .find(t => t.id === 'crime')
+                .values.find(q => q.id === 'q-applicant-did-the-crime-happen-once-or-over-time')
+                .value === 'once'
+        ) {
+            type = 'Personal injury';
+        }
+
+        return type;
+    }
+
+    /**
      * Writes a given JSON to a PDF
      * @param {object} json - The json to write
      * @param {string} pdfLoc - The name of the pdf to save the generated PDF to
@@ -147,8 +184,27 @@ function createPdfService() {
                 document.page.margins.bottom = bottom;
             }
 
+            /**
+             * Calculates the applicaiton type and writes it to the document
+             */
+            function writeApplicationType() {
+                const type = calculateApplicationType(json);
+
+                pdfDocument
+                    .fontSize(12.5)
+                    .font('Helvetica-Bold')
+                    .fillColor('#444444')
+                    .text('Application Type')
+                    .font('Helvetica');
+                pdfDocument.text(type);
+                pdfDocument.moveDown();
+            }
+
             // Write the main header to the beginning of the document
             writeHeader();
+
+            // Write the Application Type to the beginning of the document
+            writeApplicationType();
 
             // Loops over each theme in the json, and for each writes the header and then
             //     loops through each question in the theme, which are each written using addPDFQuestion
@@ -203,7 +259,7 @@ function createPdfService() {
                 <p style="font-weight: bold;">Date: ${moment(json.meta.submittedDate).format(
                     'DD/MM/YYYY'
                 )}</p>
-                <p style="font-weight: bold;">I have read and understood the information and declaration</p>
+                <p style="font-weight: bold;">${json.declaration.valueLabel}</p>
                 `;
             const htmlBuffer = Buffer.from(bufStr, 'utf8');
 
@@ -256,7 +312,8 @@ function createPdfService() {
     }
 
     return Object.freeze({
-        writeJSONToPDF
+        writeJSONToPDF,
+        calculateApplicationType
     });
 }
 

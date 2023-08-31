@@ -4,13 +4,108 @@ const fs = require('fs');
 const createPdfService = require('./index');
 
 describe('PDF Service', () => {
-    jest.setTimeout(999999);
+    let pdfService;
+    beforeEach(() => {
+        pdfService = createPdfService();
+    });
+
     it('Should generate a valid PDF document', async () => {
-        jest.setTimeout(999999);
         const path = './resources/temp/output.pdf';
         const stream = fs.readFileSync('./resources/testing/checkYourAnswers.json');
-        const pdfService = createPdfService();
         await pdfService.writeJSONToPDF(JSON.parse(stream), path);
         expect(fs.existsSync(path)).toBeTruthy();
+    });
+
+    it('Should get PI application type', () => {
+        const json = {
+            themes: [
+                {
+                    id: 'about-application',
+                    values: [
+                        {
+                            id: 'q-applicant-fatal-claim',
+                            value: false
+                        }
+                    ]
+                },
+                {
+                    id: 'crime',
+                    values: [
+                        {
+                            id: 'q-applicant-did-the-crime-happen-once-or-over-time',
+                            value: 'once'
+                        }
+                    ]
+                }
+            ]
+        };
+        const type = pdfService.calculateApplicationType(json);
+        expect(type).toStrictEqual('Personal injury');
+    });
+
+    it('Should get POA application type', () => {
+        const json = {
+            themes: [
+                {
+                    id: 'about-application',
+                    values: [
+                        {
+                            id: 'q-applicant-fatal-claim',
+                            value: false
+                        }
+                    ]
+                },
+                {
+                    id: 'crime',
+                    values: [
+                        {
+                            id: 'q-applicant-did-the-crime-happen-once-or-over-time',
+                            value: 'over a period of time'
+                        }
+                    ]
+                }
+            ]
+        };
+        const type = pdfService.calculateApplicationType(json);
+        expect(type).toStrictEqual('Period of abuse');
+    });
+
+    it('Should get Fatal only application type', () => {
+        const json = {
+            themes: [
+                {
+                    id: 'about-application',
+                    values: [
+                        {
+                            id: 'q-applicant-fatal-claim',
+                            value: true
+                        }
+                    ]
+                }
+            ]
+        };
+        const type = pdfService.calculateApplicationType(json);
+        expect(type).toStrictEqual('Fatal');
+    });
+
+    it('Should get Funeral application type', () => {
+        const json = {
+            meta: {
+                splitFuneral: true
+            },
+            themes: [
+                {
+                    id: 'about-application',
+                    values: [
+                        {
+                            id: 'q-applicant-fatal-claim',
+                            value: true
+                        }
+                    ]
+                }
+            ]
+        };
+        const type = pdfService.calculateApplicationType(json);
+        expect(type).toStrictEqual('Funeral');
     });
 });

@@ -140,7 +140,7 @@ async function processMessage(message) {
 async function handleMessage(sqsResponse) {
     if (sqsResponse.Messages) {
         sqsResponse.Messages.forEach(async message => {
-            processMessage(message);
+            await processMessage(message);
         });
     }
 }
@@ -155,7 +155,7 @@ async function applicationService() {
             MaxNumberOfMessages: 10
         };
         const response = await sqsService.receiveSQS(receiveInput);
-        handleMessage(response);
+        await handleMessage(response);
     }, 30000);
 }
 
