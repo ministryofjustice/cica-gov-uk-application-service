@@ -36,7 +36,7 @@ describe('Application Service', () => {
         }).toThrowError('Application JSON document location is not in a valid format (.json)');
     });
 
-    it('Should duplicate the application JSON file having updated the reelvant data for a split app', async () => {
+    it('Should duplicate the application JSON file having updated the relevant data for a split app', async () => {
         // Arrange
         const stream = fs.readFileSync('resources/testing/checkYourAnswers.json');
         const application = JSON.parse(stream);
@@ -49,5 +49,14 @@ describe('Application Service', () => {
             application.meta.funeralReference
         );
         expect(JSON.parse(fs.readFileSync(path)).meta.splitFuneral).toBeTruthy();
+    });
+
+    it('Should generate the correct filename for the split duplicate JSON', async () => {
+        // Arrange
+        const key = 'testdirectory/originalfile.json';
+
+        // Act and Assert
+        const splitKey = applicationService.getSplitJsonFilename(key);
+        expect(splitKey).toBe('testdirectory/originalfile-split.json');
     });
 });

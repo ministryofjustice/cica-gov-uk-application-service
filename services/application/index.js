@@ -26,6 +26,14 @@ function parseJSONLocation(message) {
 }
 
 /**
+ * Gets the full S3 URI of the split JSON file
+ * @param {string} key - The original filename for the base JSON.
+ */
+function getSplitJsonFilename(key) {
+    return `${path.parse(key).dir}/${path.parse(key).name}-split${path.parse(key).ext}`;
+}
+
+/**
  * Uses the case reference number from the application json to determine the upload
  * location of the generaed PDF summary form.
  * @param {string} applicationJson - The full application JSON from S3.
@@ -114,7 +122,7 @@ async function processMessage(message) {
     // we need to process a second PDF after having updated some of the JSON data
     if (applicationJson.meta.funeralReference) {
         // Modify and duplicate JSON
-        const duplicateKey = `${path.parse(jsonKey).name}-split.json`;
+        const duplicateKey = getSplitJsonFilename(jsonKey);
         const tempPath = `${temporaryLocation}/duplicate.json`;
         await duplicateJson(applicationJson, tempPath);
 
@@ -166,5 +174,6 @@ module.exports = {
     processMessage,
     processPdf,
     handleMessage,
-    duplicateJson
+    duplicateJson,
+    getSplitJsonFilename
 };
