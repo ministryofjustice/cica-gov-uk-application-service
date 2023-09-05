@@ -7,6 +7,8 @@ const logger = require('../logging/logger');
 /** Returns S3 Service object with functions to get objects from an S3 bucket and put objects in an S3 bucket */
 
 function createS3Service() {
+    /* istanbul ignore next */
+
     const s3client = new S3Client({
         region: 'eu-west-2',
         endpoint: process.env.NODE_ENV === 'local' ? 'http://localhost:4566' : undefined

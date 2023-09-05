@@ -394,7 +394,8 @@
                         "phyinj-006",
                         "phyinj-137",
                         "phyinj-083",
-                        "phyinj-161"
+                        "phyinj-161",
+                        "phyinj-149"
                     ],
                     "valueLabel": [
                         "Quadriplegia or tetraplegia (paralysis of all 4 limbs)",
@@ -403,7 +404,8 @@
                         "Broken ear bone",
                         "Hemiplegia (paralysis of one side of the the body)",
                         "Scars",
-                        "Cartilage"
+                        "Cartilage",
+                        "Other"
                     ],
                     "sectionId": "p-applicant-physical-injury-upper-head",
                     "theme": "injuries"
@@ -546,6 +548,18 @@
                     "type": "composite",
                     "label": "What is the GP's address?",
                     "values": [
+                        {
+                            "id": "q-gp-date",
+                            "type": "simple",
+                            "label": "Date of GP Visit",
+                            "value": "1990-02-06T00:00:00.000Z",
+                            "sectionId": "p-applicant-gp-date",
+                            "theme": "treatment",
+                            "format": {
+                                "value": "date-time",
+                                "precision": "YYYY-MM-DD"
+                            }
+                        },
                         {
                             "id": "q-gp-organisation-name",
                             "type": "simple",

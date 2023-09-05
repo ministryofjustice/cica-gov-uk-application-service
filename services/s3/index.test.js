@@ -59,7 +59,7 @@ describe('S3 Service', () => {
         );
     });
 
-    it('Should put the given item in the given S3 bucket', async () => {
+    it('Should put the pdf in the given S3 bucket', async () => {
         // Arrange
         const message = {message: 'TestMessage'};
         s3Mock.on(PutObjectCommand).resolves(message);
@@ -67,6 +67,60 @@ describe('S3 Service', () => {
         // Act
         const s3Service = createS3Service();
         const res = await s3Service.putInS3('bucket', 'resources/testing/summary.pdf', 'key');
+
+        // Assert
         expect(res).toBe(message);
+    });
+
+    it('Should put the json in the given S3 bucket', async () => {
+        // Arrange
+        const message = {message: 'TestMessage'};
+        s3Mock.on(PutObjectCommand).resolves(message);
+
+        // Act
+        const s3Service = createS3Service();
+        const res = await s3Service.putInS3(
+            'bucket',
+            'resources/testing/checkYourAnswers.json',
+            'key'
+        );
+
+        // Assert
+        expect(res).toBe(message);
+    });
+
+    it('Should throw an error if upload type is not supported', async () => {
+        // Arrange
+        const message = {message: 'TestMessage'};
+        s3Mock.on(PutObjectCommand).resolves(message);
+
+        // Act and Assert
+        const s3Service = createS3Service();
+        await expect(() =>
+            s3Service.putInS3('bucket', 'resources/testing/text.exe', 'key')
+        ).rejects.toThrowError('Unsupported file type');
+    });
+
+    it('Should throw an error if file does not exist', async () => {
+        // Arrange
+        const message = {message: 'TestMessage'};
+        s3Mock.on(PutObjectCommand).resolves(message);
+
+        // Act and Assert
+        const s3Service = createS3Service();
+        await expect(() =>
+            s3Service.putInS3('bucket', 'resources/testing/this-does-not-exist.json', 'key')
+        ).rejects.toThrowError('no such file or directory');
+    });
+
+    it('Should throw an error if the bucket does not exist', async () => {
+        // Arrange
+        s3Mock.on(PutObjectCommand).rejects('The specified bucket does not exist');
+
+        // Act and Assert
+        const s3Service = createS3Service();
+        await expect(() =>
+            s3Service.putInS3('bucket', 'resources/testing/summary.pdf', 'key')
+        ).rejects.toThrowError('The specified bucket does not exist');
     });
 });

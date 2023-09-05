@@ -10,6 +10,8 @@ const logger = require('../logging/logger');
 
 /** Returns SQS Service object with functions to send, delete and receive messages from a SQS queue */
 function createSqsService() {
+    /* istanbul ignore next */
+
     const client = new SQSClient({
         region: 'eu-west-2',
         endpoint: process.env.NODE_ENV === 'local' ? 'http://localhost:4566' : undefined

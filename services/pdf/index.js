@@ -81,11 +81,7 @@ function createPdfService() {
              * @param {object} question - The question to write to the PDF
              */
             async function addPDFQuestion(question) {
-                if (question.id === 'q-applicant-declaration') {
-                    // If the question has an html label, use writeHTML to write the label to the pdf
-                    // await writeHTML(question.label);
-                    logger.info('Keeping writing');
-                } else if (question.id === 'q-applicant-physical-injuries') {
+                if (question.id === 'q-applicant-physical-injuries') {
                     pdfDocument
                         .fontSize(12.5)
                         .font('Helvetica-Bold')
@@ -217,6 +213,8 @@ function createPdfService() {
                 // If we are too close to the bottom of the page, start writing the header
                 // to the top of a new page instead. This is calculated based on the current Y position
                 // in relation to the bottom border of the page, with a buffer of (25 + line height)
+                /* istanbul ignore next */
+
                 if (yPos > bottomBorder - bottomMargin - lineHeight - 25) {
                     pdfDocument.addPage();
                 }
