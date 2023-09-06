@@ -19,9 +19,14 @@ function createPdfService() {
         if (
             applicationJson.themes
                 .find(t => t.id === 'about-application')
-                .values.find(q => q.id === 'q-applicant-fatal-claim').value
+                .values.find(q => q.id === 'q-applicant-fatal-claim')?.value
         ) {
-            if (applicationJson.meta?.splitFuneral) {
+            if (
+                applicationJson.themes
+                    .find(t => t.id === 'about-application')
+                    .values.find(q => q.id === 'q-applicant-claim-type')?.value ||
+                applicationJson.meta?.splitFuneral
+            ) {
                 type = 'Funeral';
             } else {
                 type = 'Fatal';
@@ -30,14 +35,14 @@ function createPdfService() {
             applicationJson.themes
                 .find(t => t.id === 'crime')
                 .values.find(q => q.id === 'q-applicant-did-the-crime-happen-once-or-over-time')
-                .value === 'over a period of time'
+                ?.value === 'over a period of time'
         ) {
             type = 'Period of abuse';
         } else if (
             applicationJson.themes
                 .find(t => t.id === 'crime')
                 .values.find(q => q.id === 'q-applicant-did-the-crime-happen-once-or-over-time')
-                .value === 'once'
+                ?.value === 'once'
         ) {
             type = 'Personal injury';
         }

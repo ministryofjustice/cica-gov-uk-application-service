@@ -88,7 +88,7 @@ describe('PDF Service', () => {
         expect(type).toStrictEqual('Fatal');
     });
 
-    it('Should get Funeral application type', () => {
+    it('Should get Funeral application type when split', () => {
         const json = {
             meta: {
                 splitFuneral: true
@@ -99,6 +99,28 @@ describe('PDF Service', () => {
                     values: [
                         {
                             id: 'q-applicant-fatal-claim',
+                            value: true
+                        }
+                    ]
+                }
+            ]
+        };
+        const type = pdfService.calculateApplicationType(json);
+        expect(type).toStrictEqual('Funeral');
+    });
+
+    it('Should get Funeral application type when not split', () => {
+        const json = {
+            themes: [
+                {
+                    id: 'about-application',
+                    values: [
+                        {
+                            id: 'q-applicant-fatal-claim',
+                            value: true
+                        },
+                        {
+                            id: 'q-applicant-claim-type',
                             value: true
                         }
                     ]

@@ -249,7 +249,9 @@ workflows:
           type: approval
           requires:
             - push_image
-            - deploy_to_dev
+          filters:
+            branches:
+              only: application-service-deploy-to-uat
       - deploy_to_uat:
           requires:
             - deploy_to_uat_approval
@@ -260,7 +262,7 @@ workflows:
           type: approval
           requires:
             - push_image
-            - deploy_to_uat
+            - deploy_to_dev
           filters:
             branches:
               only: application-service-deploy
