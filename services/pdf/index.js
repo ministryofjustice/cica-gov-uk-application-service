@@ -35,7 +35,7 @@ function createPdfService() {
             applicationJson.themes
                 .find(t => t.id === 'crime')
                 .values.find(q => q.id === 'q-applicant-did-the-crime-happen-once-or-over-time')
-                ?.value === 'over a period of time'
+                ?.value === 'over-a-period-of-time'
         ) {
             type = 'Period of abuse';
         } else if (
