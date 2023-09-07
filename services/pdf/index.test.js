@@ -60,7 +60,7 @@ describe('PDF Service', () => {
                     values: [
                         {
                             id: 'q-applicant-did-the-crime-happen-once-or-over-time',
-                            value: 'over a period of time'
+                            value: 'over-a-period-of-time'
                         }
                     ]
                 }
