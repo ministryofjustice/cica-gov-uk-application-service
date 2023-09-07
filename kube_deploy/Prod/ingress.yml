@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/whitelist-source-range: 31.121.104.9/32,37.143.143.162/32,37.143.143.10/32
+    external-dns.alpha.kubernetes.io/set-identifier: app-service-ingress-prod-claim-criminal-injuries-compensation-prod-green
+    external-dns.alpha.kubernetes.io/aws-weight: '100'
+  name: app-service-ingress-prod
+  namespace: claim-criminal-injuries-compensation-prod
+spec:
+  tls:
+    - hosts:
+        - application-service.prod.claim-criminal-injuries-compensation.apps.live.cloud-platform.service.justice.gov.uk
+    - hosts:
+        - application-service.prod.claim-criminal-injuries-compensation.service.justice.gov.uk
+      secretName: application-service-cert-secret-prod
+  ingressClassName: default
+  rules:
+    - host: application-service.prod.claim-criminal-injuries-compensation.apps.live.cloud-platform.service.justice.gov.uk
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: app-service-prod
+                port:
+                  number: 80
+            pathType: ImplementationSpecific
+    - host: application-service.prod.claim-criminal-injuries-compensation.service.justice.gov.uk
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: app-service-prod
+                port:
+                  number: 80
+            pathType: ImplementationSpecific
