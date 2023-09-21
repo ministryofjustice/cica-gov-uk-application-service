@@ -120,14 +120,14 @@ async function processMessage(message) {
 
     // If there is a secondary CRN for an associated funeral expenses application
     // we need to process a second PDF after having updated some of the JSON data
-    if (applicationJson.meta.funeralReference) {
+    if (applicationJson.meta.caseReference) {
         // Modify and duplicate JSON
         const duplicateKey = getSplitJsonFilename(jsonKey);
         const tempPath = `${temporaryLocation}/duplicate.json`;
         await duplicateJson(applicationJson, tempPath);
 
         // Upload the new JSON to S3 for the Tempus Broker to process as a separate application
-        await s3Service.putInS3(bucket, tempPath, duplicateKey);
+        await s3Service.putInS3(bucket, tempPath, jsonKey);
 
         // Generate and upload a second PDF and SQS
         await processPdf(applicationJson, duplicateKey, temporaryLocation);
