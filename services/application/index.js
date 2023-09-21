@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const logger = require('../logging/logger');
 const createS3Service = require('../s3');
 const createSqsService = require('../sqs');
 const createPdfService = require('../pdf');
@@ -55,23 +56,41 @@ function generatePDFLocation(applicationJson) {
 async function processPdf(applicationJson, jsonKey, temporaryLocation) {
     const pdfService = createPdfService();
     const s3Service = createS3Service();
-    const sqsService = createSqsService();
 
+    // Generate the location to store the document in S3
     const pdfLocation = generatePDFLocation(applicationJson);
-    await pdfService.writeJSONToPDF(applicationJson, `${temporaryLocation}/summary.pdf`);
+
+    const temporaryFileName = `${temporaryLocation}/${path.parse(jsonKey).name}.pdf`;
+
+    // Generate the PDF
+    await pdfService.writeJSONToPDF(applicationJson, temporaryFileName);
 
     // Upload the PDF document to S3
-    await s3Service.putInS3(bucket, `${temporaryLocation}/summary.pdf`, pdfLocation);
+    await s3Service.putInS3(bucket, temporaryFileName, pdfLocation);
+
+    // Delete the temporary file after upload
+    fs.unlinkSync(temporaryFileName);
+
+    return pdfLocation;
+}
+
+async function sendToTempus(pdfLocation, jsonKey, message) {
+    if (JSON.parse(message.Body).regeneratePdf) {
+        logger.info('Skipping sending to Tempus.');
+        return 'Skipped sending to Tempus';
+    }
+
+    const sqsService = createSqsService();
 
     // Write message to Tempus queue for further processing
     const sqsInput = {
         QueueUrl: tempusQueue
     };
     const sqsBody = `{
-        "applicationPDFDocumentSummaryKey": "${pdfLocation}",
-        "applicationJSONDocumentSummaryKey": "${jsonKey}"
-    }`;
-    sqsService.sendSQS(sqsInput, sqsBody);
+            "applicationPDFDocumentSummaryKey": "${pdfLocation}",
+            "applicationJSONDocumentSummaryKey": "${jsonKey}"
+        }`;
+    return sqsService.sendSQS(sqsInput, sqsBody);
 }
 
 /**
@@ -106,31 +125,37 @@ async function processMessage(message) {
     const s3Service = createS3Service();
     const sqsService = createSqsService();
 
-    // Retrieve the JSON data from S3
-    const jsonKey = parseJSONLocation(message);
-    const applicationJson = await s3Service.getFromS3(bucket, jsonKey);
-
-    // Generate the PDF location and document itself
+    // Set the location to temporarily store the generated document
     const temporaryLocation = './temp';
     if (!fs.existsSync(temporaryLocation)) {
         fs.mkdirSync(temporaryLocation);
     }
 
-    await processPdf(applicationJson, jsonKey, temporaryLocation);
+    // Retrieve the JSON data from S3
+    const jsonKey = parseJSONLocation(message);
+    const applicationJson = await s3Service.getFromS3(bucket, jsonKey);
+
+    const pdfLocation = await processPdf(applicationJson, jsonKey, temporaryLocation);
+
+    // Send message to Tempus queue
+    await sendToTempus(pdfLocation, jsonKey, message);
 
     // If there is a secondary CRN for an associated funeral expenses application
     // we need to process a second PDF after having updated some of the JSON data
     if (applicationJson.meta.funeralReference) {
         // Modify and duplicate JSON
         const duplicateKey = getSplitJsonFilename(jsonKey);
-        const tempPath = `${temporaryLocation}/duplicate.json`;
+        const tempPath = `${temporaryLocation}/${path.parse(jsonKey).name}-split.json`;
         await duplicateJson(applicationJson, tempPath);
 
         // Upload the new JSON to S3 for the Tempus Broker to process as a separate application
         await s3Service.putInS3(bucket, tempPath, duplicateKey);
 
         // Generate and upload a second PDF and SQS
-        await processPdf(applicationJson, duplicateKey, temporaryLocation);
+        const splitPdfLocation = await processPdf(applicationJson, duplicateKey, temporaryLocation);
+
+        // Send message to Tempus queue
+        await sendToTempus(splitPdfLocation, duplicateKey, message);
     }
 
     // Finally delete the consumed message from the Application Queue
@@ -138,7 +163,7 @@ async function processMessage(message) {
         QueueUrl: applicationQueue,
         ReceiptHandle: message.ReceiptHandle
     };
-    sqsService.deleteSQS(deleteInput);
+    await sqsService.deleteSQS(deleteInput);
 }
 
 /**
@@ -175,5 +200,6 @@ module.exports = {
     processPdf,
     handleMessage,
     duplicateJson,
-    getSplitJsonFilename
+    getSplitJsonFilename,
+    sendToTempus
 };
