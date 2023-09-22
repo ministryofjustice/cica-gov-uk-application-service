@@ -19,8 +19,11 @@ upload-json:
 send-message:
 	aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url "http://localhost:4566/000000000000/application-queue" --message-body "{\"applicationJSONDocumentSummaryKey\": \"application-bucket/testJson.json\"}"
 
+send-regenerate-message:
+	aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url "http://localhost:4566/000000000000/application-queue" --message-body "{\"applicationJSONDocumentSummaryKey\": \"application-bucket/testJson.json\", \"regeneratePdf\": true}"
+
 purge-queue:
-	aws --endpoint-url=http://localhost:4566 sqs purge-queue --queue-url "http://localhost:4566/000000000000/tempus-queue"
+	aws --endpoint-url=http://localhost:4566 sqs purge-queue --queue-url "http://localhost:4566/000000000000/application-queue"
 
 list-objects:
 	aws --endpoint-url=http://localhost:4566 s3api list-objects-v2 --bucket application-bucket

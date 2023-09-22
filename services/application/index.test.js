@@ -1,6 +1,8 @@
 'use strict';
 
 const fs = require('fs');
+const {mockClient} = require('aws-sdk-client-mock');
+const {SendMessageCommand, SQSClient} = require('@aws-sdk/client-sqs');
 const applicationService = require('.');
 
 describe('Application Service', () => {
@@ -58,5 +60,40 @@ describe('Application Service', () => {
         // Act and Assert
         const splitKey = applicationService.getSplitJsonFilename(key);
         expect(splitKey).toBe('testdirectory/originalfile-split.json');
+    });
+
+    it('Should send to tempus', async () => {
+        // Arrange
+        const sqsMock = mockClient(SQSClient);
+        sqsMock.on(SendMessageCommand).resolves('Message Sent');
+
+        const pdfLocation = 'bucket/directory/summary.pdf';
+        const key = 'testdirectory/originalfile.json';
+        const message = {
+            Body: '{"applicationJSONDocumentSummaryKey": "test/sample-location.json"}'
+        };
+
+        const result = await applicationService.sendToTempus(pdfLocation, key, message);
+
+        // Act and Assert
+        expect(result).toBe('Message Sent');
+    });
+
+    it('Should not send to tempus', async () => {
+        // Arrange
+        const sqsMock = mockClient(SQSClient);
+        sqsMock.on(SendMessageCommand).resolves('Message Sent');
+
+        const pdfLocation = 'bucket/directory/summary.pdf';
+        const key = 'testdirectory/originalfile.json';
+        const message = {
+            Body:
+                '{"applicationJSONDocumentSummaryKey": "test/sample-location.json", "regeneratePdf": true}'
+        };
+
+        const result = await applicationService.sendToTempus(pdfLocation, key, message);
+
+        // Act and Assert
+        expect(result).toBe('Skipped sending to Tempus');
     });
 });
