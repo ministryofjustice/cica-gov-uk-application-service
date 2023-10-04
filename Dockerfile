@@ -1,5 +1,5 @@
 # lets start from an image that already has nodejs installed
-FROM node:20.1.0
+FROM node:18.18.0-bullseye-slim as base
 
 RUN groupadd -g 1014 dc_user \
 && useradd -rm -d /usr/src/app -u 1015 -g dc_user dc_user
@@ -14,8 +14,8 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-# Defult to production. npm will ignore devDependencies in production mode
-ARG NODE_ENV=dev
+# Default to production. npm will ignore devDependencies in production mode
+ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
 # RUN npm install
