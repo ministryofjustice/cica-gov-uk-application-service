@@ -22,7 +22,7 @@ spec:
           - path: /
             backend:
               service:
-                name: app-service-prod
+                name: application-service-prod
                 port:
                   number: 80
             pathType: ImplementationSpecific
@@ -32,7 +32,7 @@ spec:
           - path: /
             backend:
               service:
-                name: app-service-prod
+                name: application-service-prod
                 port:
                   number: 80
             pathType: ImplementationSpecific
