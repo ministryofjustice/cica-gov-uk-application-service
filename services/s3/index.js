@@ -77,9 +77,13 @@ function createS3Service() {
                     logger.error(unsupportedFileError);
                     rej(unsupportedFileError);
                 }
+
+                // for some reason when running locally, the key is expected to be `bucket/key`
+                // but when running in production, it is expected to be just `key`
+                const s3Key = process.env.NODE_ENV === 'local' ? `${bucket}/${key}` : key;
                 const command = new PutObjectCommand({
                     Bucket: bucket,
-                    Key: `${key}`,
+                    Key: s3Key,
                     Body: file,
                     ContentType: contentType,
                     ServerSideEncryption: 'aws:kms',
