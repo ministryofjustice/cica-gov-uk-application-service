@@ -25,7 +25,7 @@ describe('Application Service', () => {
         const location = applicationService.parseJSONLocation(JSON.parse(stream).Messages[0]);
 
         // Assert
-        expect(location).toEqual('test/sample-location.json');
+        expect(location).toEqual('19-751194/sample-location.json');
     });
 
     it('Should throw an error if the file types are wrong', async () => {
@@ -67,13 +67,19 @@ describe('Application Service', () => {
         const sqsMock = mockClient(SQSClient);
         sqsMock.on(SendMessageCommand).resolves('Message Sent');
 
+        const applicationJson = fs.readFileSync('./resources/testing/checkYourAnswers.json');
         const pdfLocation = 'bucket/directory/summary.pdf';
         const key = 'testdirectory/originalfile.json';
         const message = {
             Body: '{"applicationJSONDocumentSummaryKey": "test/sample-location.json"}'
         };
 
-        const result = await applicationService.sendToTempus(pdfLocation, key, message);
+        const result = await applicationService.sendToTempus(
+            pdfLocation,
+            key,
+            message,
+            JSON.parse(applicationJson)
+        );
 
         // Act and Assert
         expect(result).toBe('Message Sent');
@@ -84,6 +90,7 @@ describe('Application Service', () => {
         const sqsMock = mockClient(SQSClient);
         sqsMock.on(SendMessageCommand).resolves('Message Sent');
 
+        const applicationJson = fs.readFileSync('./resources/testing/checkYourAnswers.json');
         const pdfLocation = 'bucket/directory/summary.pdf';
         const key = 'testdirectory/originalfile.json';
         const message = {
@@ -91,7 +98,12 @@ describe('Application Service', () => {
                 '{"applicationJSONDocumentSummaryKey": "test/sample-location.json", "regeneratePdf": true}'
         };
 
-        const result = await applicationService.sendToTempus(pdfLocation, key, message);
+        const result = await applicationService.sendToTempus(
+            pdfLocation,
+            key,
+            message,
+            JSON.parse(applicationJson)
+        );
 
         // Act and Assert
         expect(result).toBe('Skipped sending to Tempus');

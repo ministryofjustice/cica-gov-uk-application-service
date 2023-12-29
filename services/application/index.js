@@ -74,7 +74,7 @@ async function processPdf(applicationJson, jsonKey, temporaryLocation) {
     return pdfLocation;
 }
 
-async function sendToTempus(pdfLocation, jsonKey, message) {
+async function sendToTempus(pdfLocation, jsonKey, message, applicationJson) {
     if (JSON.parse(message.Body).regeneratePdf) {
         logger.info('Skipping sending to Tempus.');
         return 'Skipped sending to Tempus';
@@ -88,7 +88,8 @@ async function sendToTempus(pdfLocation, jsonKey, message) {
     };
     const sqsBody = `{
             "applicationPDFDocumentSummaryKey": "${pdfLocation}",
-            "applicationJSONDocumentSummaryKey": "${jsonKey}"
+            "applicationJSONDocumentSummaryKey": "${jsonKey}",
+            "applicationCRN": "${applicationJson.meta.caseReference}"
         }`;
     return sqsService.sendSQS(sqsInput, sqsBody);
 }
@@ -138,7 +139,7 @@ async function processMessage(message) {
     const pdfLocation = await processPdf(applicationJson, jsonKey, temporaryLocation);
 
     // Send message to Tempus queue
-    await sendToTempus(pdfLocation, jsonKey, message);
+    await sendToTempus(pdfLocation, jsonKey, message, applicationJson);
 
     // If there is a secondary CRN for an associated funeral expenses application
     // we need to process a second PDF after having updated some of the JSON data
@@ -155,7 +156,7 @@ async function processMessage(message) {
         const splitPdfLocation = await processPdf(applicationJson, duplicateKey, temporaryLocation);
 
         // Send message to Tempus queue
-        await sendToTempus(splitPdfLocation, duplicateKey, message);
+        await sendToTempus(splitPdfLocation, duplicateKey, message, applicationJson);
     }
 
     // Finally delete the consumed message from the Application Queue
