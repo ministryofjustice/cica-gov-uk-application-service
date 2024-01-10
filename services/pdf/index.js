@@ -66,11 +66,7 @@ function createPdfService() {
              * @param {object} question - The sub question to write to the PDF
              */
             function addPDFSubquestion(question) {
-                pdfDocument
-                    .fontSize(12.5)
-                    .font('Helvetica-Bold')
-                    .text(question.label, {indent: 30})
-                    .font('Helvetica');
+                pdfDocument.fontSize(12.5).font('Helvetica');
                 if (question.format && question.format.value === 'date-time') {
                     pdfDocument.text(
                         moment(question.valueLabel || question.value).format('DD/MM/YYYY'),
@@ -186,7 +182,7 @@ function createPdfService() {
             }
 
             /**
-             * Calculates the applicaiton type and writes it to the document
+             * Calculates the application type and writes it to the document
              */
             function writeApplicationType() {
                 const type = calculateApplicationType(json);
