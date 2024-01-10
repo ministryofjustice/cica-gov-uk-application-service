@@ -62,7 +62,7 @@ function createPdfService() {
             const pdfDocument = new PDFDocument({bufferPages: true});
 
             /**
-             * Writes a Subquestion of a composite question to the PDF
+             * Writes a Subquestion of a composite question to a new line of the PDF
              * @param {object} question - The sub question to write to the PDF
              */
             function addPDFSubquestion(question) {
@@ -75,6 +75,15 @@ function createPdfService() {
                 } else {
                     pdfDocument.text(question.valueLabel || question.value, {indent: 30});
                 }
+            }
+            /**
+             * Writes all Subquestion answers from a single question to a single line in the PDF
+             * @param {Array} questions - The array of subquestions
+             */
+            function addPDFSubquestions(questions) {
+                pdfDocument.fontSize(12.5).font('Helvetica');
+                const answers = questions.map(question => question.value);
+                pdfDocument.text(answers.join(' '));
             }
 
             /**
@@ -103,6 +112,8 @@ function createPdfService() {
                         pdfDocument.text(
                             moment(question.valueLabel || question.value).format('DD/MM/YYYY')
                         );
+                    } else if (Array.isArray(question.valueLabel)) {
+                        pdfDocument.text(question.valueLabel.join('\n'));
                     } else {
                         pdfDocument.text(question.valueLabel || question.value);
                     }
@@ -114,9 +125,13 @@ function createPdfService() {
                         .font('Helvetica-Bold')
                         .fillColor('#444444')
                         .text(question.label);
-                    Object.keys(question.values).forEach(function(q) {
-                        addPDFSubquestion(question.values[q]);
-                    });
+                    if (question.id.includes('name')) {
+                        addPDFSubquestions(question.values);
+                    } else {
+                        Object.keys(question.values).forEach(function(q) {
+                            addPDFSubquestion(question.values[q]);
+                        });
+                    }
                     pdfDocument.moveDown();
                 }
             }

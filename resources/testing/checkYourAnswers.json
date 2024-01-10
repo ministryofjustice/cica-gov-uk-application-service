@@ -549,6 +549,18 @@
                     "label": "What is the GP's address?",
                     "values": [
                         {
+                            "id": "q-gp-date",
+                            "type": "simple",
+                            "label": "Date of GP Visit",
+                            "value": "1990-02-06T00:00:00.000Z",
+                            "sectionId": "p-applicant-gp-date",
+                            "theme": "treatment",
+                            "format": {
+                                "value": "date-time",
+                                "precision": "YYYY-MM-DD"
+                            }
+                        },
+                        {
                             "id": "q-gp-organisation-name",
                             "type": "simple",
                             "label": "Practice name",
