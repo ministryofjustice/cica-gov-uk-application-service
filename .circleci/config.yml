@@ -67,6 +67,14 @@ jobs:
           command: |
             docker build --no-cache -t cica/cica-repo-dev .
       - run:
+          name: Install trivy
+          command: |
+            apk add --update-cache --upgrade curl
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+      - run:
+          name: Scan the local image with trivy
+          command: trivy image --exit-code 0 --no-progress cica/cica-repo-dev
+      - run:
           name: Archive Docker Image
           command: |
             docker save -o image.tar cica/cica-repo-dev:latest
@@ -109,7 +117,7 @@ jobs:
             aws ecr get-login-password --region ${ECR_REGION} | docker login --username AWS --password-stdin  ${AWS_ECR_REGISTRY_ID}.dkr.ecr.${ECR_REGION}.amazonaws.com
             docker tag ${ECR_REPOSITORY}:latest ${ECR_REGISTRY}/${ECR_REPOSITORY}:${CIRCLE_SHA1}
             docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${CIRCLE_SHA1}
-            if [ "${CIRCLE_BRANCH}" ==  "application-service-deploy" || "${CIRCLE_BRANCH}" ==  "application-service-deploy-to-uat" || "${CIRCLE_BRANCH}" == "application-service-deploy-to-staging" ]; then
+            if [ "${CIRCLE_BRANCH}" ==  "application-service-deploy" || "${CIRCLE_BRANCH}" == "application-service-deploy-to-staging" ]; then
                docker tag ${ECR_REPOSITORY}:latest ${ECR_REGISTRY}/${ECR_REPOSITORY}:${CIRCLE_SHA1}
                docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${CIRCLE_SHA1}
             fi
@@ -234,7 +242,6 @@ workflows:
             branches:
               only:
                 - application-service-deploy
-                - application-service-deploy-to-uat
                 - application-service-deploy-to-staging
       - deploy_to_dev:
           requires:
@@ -245,27 +252,10 @@ workflows:
       - deploy_to_uat_approval:
           type: approval
           requires:
-            - push_image
-          filters:
-            branches:
-              only: application-service-deploy-to-uat
+            - deploy_to_dev
       - deploy_to_uat:
           requires:
             - deploy_to_uat_approval
-          filters:
-            branches:
-              only: application-service-deploy-to-uat
-      - deploy_to_prod_approval:
-          type: approval
-          requires:
-            - push_image
-            - deploy_to_dev
-          filters:
-            branches:
-              only: application-service-deploy
-      - deploy_to_prod:
-          requires:
-            - deploy_to_prod_approval
           filters:
             branches:
               only: application-service-deploy
@@ -282,3 +272,13 @@ workflows:
           filters:
             branches:
               only: application-service-deploy-to-staging
+      - deploy_to_prod_approval:
+          type: approval
+          requires:
+            - deploy_to_uat
+      - deploy_to_prod:
+          requires:
+            - deploy_to_prod_approval
+          filters:
+            branches:
+              only: application-service-deploy
