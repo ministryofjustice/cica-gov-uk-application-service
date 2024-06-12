@@ -1,4 +1,4 @@
-# Application service (Node.js)
+# Apply Application service (Node.js)
 This application is set up to run as a container in a Kubernetes environment with the end goals being to:
 - Generate an Application Summary Form (PDF format) and insert this into S3
 - Forward on the SQS message to the Tempus Broker (via Tempus Queue) containing a reference to the S3 location that the application summary was uploaded to.
